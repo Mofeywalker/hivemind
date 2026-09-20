@@ -1,0 +1,601 @@
+{
+  "@@locale": "en",
+  "appTitle": "Hivemind",
+  "@appTitle": {
+    "description": "The application name"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Generic cancel button text"
+  },
+  "save": "Save",
+  "@save": {
+    "description": "Generic save button text"
+  },
+  "create": "Create",
+  "@create": {
+    "description": "Generic create button text"
+  },
+  "join": "Join",
+  "@join": {
+    "description": "Generic join button text"
+  },
+  "loading": "Loading...",
+  "@loading": {
+    "description": "Generic loading state indicator"
+  },
+
+  "authSubtitlePassword": "Welcome back. Sign in to your Hiveminds.",
+  "@authSubtitlePassword": {
+    "description": "Subtitle on login screen for password auth"
+  },
+  "authSubtitleSignUp": "Create an account to join and create Hiveminds.",
+  "@authSubtitleSignUp": {
+    "description": "Subtitle on login screen for registration"
+  },
+  "authSubtitleMagicLink": "Enter your email to receive a passwordless sign-in link.",
+  "@authSubtitleMagicLink": {
+    "description": "Subtitle on login screen for magic link auth"
+  },
+  "emailLabel": "Email",
+  "@emailLabel": {
+    "description": "Email field label"
+  },
+  "emailHint": "name@example.com",
+  "@emailHint": {
+    "description": "Email field placeholder"
+  },
+  "passwordLabel": "Password",
+  "@passwordLabel": {
+    "description": "Password field label"
+  },
+  "passwordHint": "••••••••",
+  "@passwordHint": {
+    "description": "Password field placeholder"
+  },
+  "emailRequired": "Email is required",
+  "@emailRequired": {
+    "description": "Validation message when email is empty"
+  },
+  "emailInvalid": "Enter a valid email",
+  "@emailInvalid": {
+    "description": "Validation message when email is invalid"
+  },
+  "passwordTooShort": "Password must be at least 6 characters",
+  "@passwordTooShort": {
+    "description": "Validation message when password is less than 6 characters"
+  },
+  "accountCreatedCheckEmail": "Account created! Please check your email to confirm.",
+  "@accountCreatedCheckEmail": {
+    "description": "Notification message when account is created"
+  },
+  "magicLinkSent": "Magic link sent! Check your email inbox.",
+  "@magicLinkSent": {
+    "description": "Notification message when magic link is sent"
+  },
+  "errorCouldNotSendMagicLink": "Could not send magic link: {error}",
+  "@errorCouldNotSendMagicLink": {
+    "description": "Error message when magic link cannot be sent",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "errorUnexpected": "An unexpected error occurred: {error}",
+  "@errorUnexpected": {
+    "description": "General error message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "errorOAuth": "OAuth error: {error}",
+  "@errorOAuth": {
+    "description": "OAuth error message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "buttonSendMagicLink": "Send Magic Link",
+  "@buttonSendMagicLink": {
+    "description": "Button to submit magic link auth"
+  },
+  "buttonCreateAccount": "Create Account",
+  "@buttonCreateAccount": {
+    "description": "Button to register account"
+  },
+  "buttonSignIn": "Sign In",
+  "@buttonSignIn": {
+    "description": "Button to sign into account"
+  },
+  "usePasswordInstead": "Use password instead",
+  "@usePasswordInstead": {
+    "description": "Toggle to switch from magic link to password"
+  },
+  "useMagicLink": "Use magic link",
+  "@useMagicLink": {
+    "description": "Toggle to switch from password to magic link"
+  },
+  "haveAccountSignIn": "Have an account? Sign In",
+  "@haveAccountSignIn": {
+    "description": "Toggle to switch from sign up to sign in"
+  },
+  "needAccountSignUp": "Need an account? Sign Up",
+  "@needAccountSignUp": {
+    "description": "Toggle to switch from sign in to sign up"
+  },
+  "orContinueWith": "or continue with",
+  "@orContinueWith": {
+    "description": "Divider text before social auth providers"
+  },
+  "google": "Google",
+  "@google": {
+    "description": "Google provider label"
+  },
+  "apple": "Apple",
+  "@apple": {
+    "description": "Apple provider label"
+  },
+
+  "accountAndSettings": "Account & Settings",
+  "@accountAndSettings": {
+    "description": "Title of profile screen"
+  },
+  "hivemindMember": "Hivemind Member",
+  "@hivemindMember": {
+    "description": "Role label under user email"
+  },
+  "anonymous": "Anonymous",
+  "@anonymous": {
+    "description": "Fallback username when email is unavailable"
+  },
+  "sectionApplication": "APPLICATION",
+  "@sectionApplication": {
+    "description": "Application settings section header"
+  },
+  "version": "Version",
+  "@version": {
+    "description": "App version label"
+  },
+  "theme": "Theme",
+  "@theme": {
+    "description": "App theme label"
+  },
+  "themeDarkMode": "Dark Mode",
+  "@themeDarkMode": {
+    "description": "Dark theme status"
+  },
+  "themeLightMode": "Light Mode",
+  "@themeLightMode": {
+    "description": "Light theme status"
+  },
+  "themeSystem": "System default",
+  "@themeSystem": {
+    "description": "System theme option"
+  },
+  "language": "Language",
+  "@language": {
+    "description": "Language selector label"
+  },
+  "languageSystem": "System default",
+  "@languageSystem": {
+    "description": "Option for system default language"
+  },
+  "languageEnglish": "English",
+  "@languageEnglish": {
+    "description": "English language option"
+  },
+  "languageGerman": "Deutsch",
+  "@languageGerman": {
+    "description": "German language option"
+  },
+  "signOut": "Sign Out",
+  "@signOut": {
+    "description": "Sign out button text"
+  },
+
+  "selectHivemind": "Select Hivemind",
+  "@selectHivemind": {
+    "description": "Placeholder when no hivemind is selected"
+  },
+  "inviteMembers": "Invite Members",
+  "@inviteMembers": {
+    "description": "Tooltip for invite members button"
+  },
+  "account": "Account",
+  "@account": {
+    "description": "Tooltip for profile button"
+  },
+  "noActiveHivemindTitle": "No Active Hivemind",
+  "@noActiveHivemindTitle": {
+    "description": "Empty state title when no hivemind is selected"
+  },
+  "noActiveHivemindDescription": "Create a group or join one with an invite code to start collaborating.",
+  "@noActiveHivemindDescription": {
+    "description": "Empty state description when no hivemind is selected"
+  },
+  "buttonSelectOrCreateHivemind": "Select or Create Hivemind",
+  "@buttonSelectOrCreateHivemind": {
+    "description": "Button to select or create a hivemind"
+  },
+  "errorLoadingReminders": "Error loading reminders: {error}",
+  "@errorLoadingReminders": {
+    "description": "Error loading reminders",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "allClearTitle": "All Clear",
+  "@allClearTitle": {
+    "description": "Title when there are no reminders"
+  },
+  "allClearDescription": "No reminders scheduled for this Hivemind yet.",
+  "@allClearDescription": {
+    "description": "Description when there are no reminders"
+  },
+  "buttonCreateFirstReminder": "Create First Reminder",
+  "@buttonCreateFirstReminder": {
+    "description": "Button to create the first reminder"
+  },
+  "sectionToday": "TODAY",
+  "@sectionToday": {
+    "description": "Timeline section for today"
+  },
+  "sectionTomorrow": "TOMORROW",
+  "@sectionTomorrow": {
+    "description": "Timeline section for tomorrow"
+  },
+  "sectionUpcoming": "UPCOMING",
+  "@sectionUpcoming": {
+    "description": "Timeline section for upcoming"
+  },
+  "sectionRecurring": "RECURRING EVENTS",
+  "@sectionRecurring": {
+    "description": "Timeline section for recurring events"
+  },
+  "sectionCompleted": "COMPLETED ({count})",
+  "@sectionCompleted": {
+    "description": "Timeline section for completed reminders",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "newReminder": "New Reminder",
+  "@newReminder": {
+    "description": "Title for new reminder creation"
+  },
+  "editReminder": "Edit Reminder",
+  "@editReminder": {
+    "description": "Title for edit reminder sheet"
+  },
+  "saveChanges": "Save Changes",
+  "@saveChanges": {
+    "description": "Button to save reminder edits"
+  },
+  "errorUpdatingReminder": "Error updating reminder: {error}",
+  "@errorUpdatingReminder": {
+    "description": "Error message when updating reminder fails",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+
+  "reminderTitleHint": "What needs to be done?",
+  "@reminderTitleHint": {
+    "description": "Placeholder for reminder title input"
+  },
+  "reminderNotesHint": "Add notes or context (optional)",
+  "@reminderNotesHint": {
+    "description": "Placeholder for reminder notes input"
+  },
+  "sectionDueDateAndTime": "DUE DATE & TIME",
+  "@sectionDueDateAndTime": {
+    "description": "Section header for due date and time"
+  },
+  "sectionRecurrence": "RECURRENCE",
+  "@sectionRecurrence": {
+    "description": "Section header for recurrence options"
+  },
+  "buttonSaveReminder": "Save Reminder",
+  "@buttonSaveReminder": {
+    "description": "Button to save a new reminder"
+  },
+  "errorCreatingReminder": "Error creating reminder: {error}",
+  "@errorCreatingReminder": {
+    "description": "Error message when creating reminder fails",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "overdue": "Overdue",
+  "@overdue": {
+    "description": "Label for overdue reminders"
+  },
+
+  "recurrenceDoesNotRepeat": "Does not repeat",
+  "@recurrenceDoesNotRepeat": {
+    "description": "Recurrence preset title: none"
+  },
+  "recurrenceDaily": "Every day",
+  "@recurrenceDaily": {
+    "description": "Recurrence preset title: daily"
+  },
+  "recurrenceWeekly": "Every week",
+  "@recurrenceWeekly": {
+    "description": "Recurrence preset title: weekly"
+  },
+  "recurrenceBiweekly": "Every other week",
+  "@recurrenceBiweekly": {
+    "description": "Recurrence preset title: biweekly"
+  },
+  "recurrenceMonthly": "Every month",
+  "@recurrenceMonthly": {
+    "description": "Recurrence preset title: monthly"
+  },
+  "recurrenceWeekdays": "Every weekday (Mon - Fri)",
+  "@recurrenceWeekdays": {
+    "description": "Recurrence preset title: weekdays"
+  },
+
+  "hiveminds": "Hiveminds",
+  "@hiveminds": {
+    "description": "Title of hiveminds switcher sheet"
+  },
+  "errorLoadingHiveminds": "Error loading Hiveminds: {error}",
+  "@errorLoadingHiveminds": {
+    "description": "Error loading hiveminds",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "emptyHivemindsList": "You are not in any Hiveminds yet.\nCreate or join one below.",
+  "@emptyHivemindsList": {
+    "description": "Empty state text in hiveminds switcher"
+  },
+  "buttonCreateNew": "Create New",
+  "@buttonCreateNew": {
+    "description": "Button to create new hivemind"
+  },
+  "buttonJoinExisting": "Join Existing",
+  "@buttonJoinExisting": {
+    "description": "Button to join existing hivemind"
+  },
+
+  "createHivemindTitle": "Create Hivemind",
+  "@createHivemindTitle": {
+    "description": "Title of create hivemind dialog"
+  },
+  "groupNameLabel": "Group Name",
+  "@groupNameLabel": {
+    "description": "Label for hivemind group name field"
+  },
+  "groupNameHint": "e.g. Family, Roommates, Team",
+  "@groupNameHint": {
+    "description": "Hint for hivemind group name field"
+  },
+  "descriptionOptionalLabel": "Description (optional)",
+  "@descriptionOptionalLabel": {
+    "description": "Label for optional description field"
+  },
+  "descriptionHint": "What is this Hivemind for?",
+  "@descriptionHint": {
+    "description": "Hint for hivemind description field"
+  },
+  "failedToCreateHivemind": "Failed to create Hivemind: {error}",
+  "@failedToCreateHivemind": {
+    "description": "Error creating hivemind",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+
+  "joinHivemindTitle": "Join Hivemind",
+  "@joinHivemindTitle": {
+    "description": "Title of join hivemind dialog"
+  },
+  "sixCharacterCodeLabel": "6-Character Code",
+  "@sixCharacterCodeLabel": {
+    "description": "Label for join code field"
+  },
+  "sixCharacterCodeHint": "e.g. 7K9X2B",
+  "@sixCharacterCodeHint": {
+    "description": "Hint for join code field"
+  },
+  "scanQrCodeInstead": "Scan QR Code Instead",
+  "@scanQrCodeInstead": {
+    "description": "Button to open QR scanner from join dialog"
+  },
+  "failedToJoinHivemind": "Failed to join: {error}",
+  "@failedToJoinHivemind": {
+    "description": "Error joining hivemind",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+
+  "inviteToHivemind": "Invite to {name}",
+  "@inviteToHivemind": {
+    "description": "Title of invite sheet",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteSheetSubtitle": "Share this QR code or 6-digit code with people you want to collaborate with.",
+  "@inviteSheetSubtitle": {
+    "description": "Subtitle of invite sheet"
+  },
+  "inviteCodeCopied": "Invite code copied to clipboard!",
+  "@inviteCodeCopied": {
+    "description": "Snackbar message when invite code is copied"
+  },
+  "shareInviteMessage": "Join my Hivemind \"{name}\" to share reminders! Use code: {code} or open: {link}",
+  "@shareInviteMessage": {
+    "description": "Share text for hivemind invite",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "code": {
+        "type": "String"
+      },
+      "link": {
+        "type": "String"
+      }
+    }
+  },
+  "shareInviteSubject": "Join Hivemind \"{name}\"",
+  "@shareInviteSubject": {
+    "description": "Share subject line",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "shareLink": "Share Link",
+  "@shareLink": {
+    "description": "Button to share link"
+  },
+  "copyCode": "Copy Code",
+  "@copyCode": {
+    "description": "Button to copy invite code"
+  },
+
+  "scanHivemindQr": "Scan Hivemind QR",
+  "@scanHivemindQr": {
+    "description": "Title of QR scanner screen"
+  },
+  "joinedHivemind": "Joined \"{name}\"!",
+  "@joinedHivemind": {
+    "description": "Snackbar message when successfully joined a hivemind",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "qrScannerGuide": "Point camera at a Hivemind QR code to join",
+  "@qrScannerGuide": {
+    "description": "Helper instruction on QR scanner view"
+  },
+
+  "selectedCount": "{count} selected",
+  "@selectedCount": {
+    "description": "Number of items selected in multi-selection mode",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteSelected": "Delete selected",
+  "@deleteSelected": {
+    "description": "Tooltip and action to delete selected items"
+  },
+  "selectAll": "Select all",
+  "@selectAll": {
+    "description": "Button to select all eligible items"
+  },
+  "deselectAll": "Deselect all",
+  "@deselectAll": {
+    "description": "Button to deselect all selected items"
+  },
+  "deleteCompletedConfirmTitle": "Delete completed reminders",
+  "@deleteCompletedConfirmTitle": {
+    "description": "Title of confirmation dialog for deleting completed tasks"
+  },
+  "deleteCompletedConfirmMessage": "Are you sure you want to delete {count} completed reminders?",
+  "@deleteCompletedConfirmMessage": {
+    "description": "Message in confirmation dialog for deleting completed tasks",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete action button label"
+  },
+  "remindersDeleted": "{count} reminders deleted",
+  "@remindersDeleted": {
+    "description": "Snackbar message after reminders are deleted",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cannotDeleteWaitingForMembers": "Can only be deleted once all members have checked it off",
+  "@cannotDeleteWaitingForMembers": {
+    "description": "Warning shown when a completed task cannot be deleted because not all members have checked it off"
+  },
+  "completedByAll": "Completed by all",
+  "@completedByAll": {
+    "description": "Status badge when all hive members checked off a task"
+  },
+  "completedFraction": "{completed} of {total} checked off",
+  "@completedFraction": {
+    "description": "Status badge showing how many members checked off a task",
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "waitingForMembers": "Waiting for members",
+  "@waitingForMembers": {
+    "description": "Status badge when task is waiting for other hive members"
+  },
+  "reminderIsDue": "Reminder is due",
+  "@reminderIsDue": {
+    "description": "Default notification body when a reminder has no notes"
+  },
+  "recurrenceCustomDays": "Specific days",
+  "@recurrenceCustomDays": {
+    "description": "Recurrence chip for specific weekdays"
+  },
+  "sectionSelectWeekdays": "DAYS OF THE WEEK",
+  "@sectionSelectWeekdays": {
+    "description": "Section header for weekday picker"
+  },
+  "presetWeekdaysOnly": "Mon - Fri",
+  "@presetWeekdaysOnly": {
+    "description": "Quick select button for Monday to Friday"
+  },
+  "presetWeekendsOnly": "Sat - Sun",
+  "@presetWeekendsOnly": {
+    "description": "Quick select button for Saturday and Sunday"
+  },
+  "presetAllDays": "All",
+  "@presetAllDays": {
+    "description": "Quick select button for all days"
+  },
+  "everyWeekdayPrefix": "Every",
+  "@everyWeekdayPrefix": {
+    "description": "Prefix for recurring days like Every Mon, Wed"
+  }
+}

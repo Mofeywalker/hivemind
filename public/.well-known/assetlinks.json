@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "de.mf1337.hivemind",
+      "sha256_cert_fingerprints": [
+        "4D:72:44:AA:0C:4E:A1:7C:36:23:FE:B8:43:14:4B:9F:D7:ED:26:29:14:14:53:76:CE:E3:AA:CA:B9:1F:A3:99"
+      ]
+    }
+  }
+]

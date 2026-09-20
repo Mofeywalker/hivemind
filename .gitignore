@@ -1,0 +1,90 @@
+# ------------------------------------------------------------------------------
+# Flutter / Dart
+# ------------------------------------------------------------------------------
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# FVM (Flutter Version Manager) — SDK symlinks & version caches
+.fvm/
+!.fvm/fvm_config.json
+
+# ------------------------------------------------------------------------------
+# Node / Firebase Functions build output
+# ------------------------------------------------------------------------------
+node_modules/
+functions/lib/
+
+# ------------------------------------------------------------------------------
+# Firebase CLI local cache
+# ------------------------------------------------------------------------------
+.firebase/
+
+# Local project notes (contains personal device info)
+TRACKING.md
+
+# ------------------------------------------------------------------------------
+# Android
+# ------------------------------------------------------------------------------
+**/android/**/gradle-wrapper.jar
+**/android/app/google-services.json
+**/android/.gradle
+**/android/captures/
+**/android/gradlew
+**/android/gradlew.bat
+**/android/local.properties
+**/android/**/GeneratedPluginRegistrant.java
+**/android/key.properties
+**/*.keystore
+**/*.jks
+
+# ------------------------------------------------------------------------------
+# iOS
+# ------------------------------------------------------------------------------
+**/ios/**/Pods/
+**/ios/**/.symlinks/
+**/ios/**/Flutter/Flutter.framework
+**/ios/**/Flutter/Flutter.podspec
+**/ios/**/Flutter/Generated.xcconfig
+**/ios/**/Flutter/app.flx
+**/ios/**/Flutter/app.zip
+**/ios/**/Flutter/flutter_assets/
+**/ios/**/DerivedData/
+**/ios/**/GeneratedPluginRegistrant.h
+**/ios/**/GeneratedPluginRegistrant.m
+**/ios/**/GeneratedPluginRegistrant.swift
+**/ios/**/.bundle/
+
+# ------------------------------------------------------------------------------
+# macOS / OS Artifacts
+# ------------------------------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ------------------------------------------------------------------------------
+# IDEs & Editors
+# ------------------------------------------------------------------------------
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# ------------------------------------------------------------------------------
+# Environment & Secrets
+# ------------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+
+# Exceptions to allow tracking explicit project files
+!.fvm/fvm_config.json
