@@ -646,5 +646,56 @@
   "completedBySingle": "Completed",
   "@completedBySingle": {
     "description": "Badge showing single-person task is completed"
+  },
+  "membersTitle": "Members",
+  "@membersTitle": {
+    "description": "Title for the members sheet"
+  },
+  "membersCount": "{count, plural, =1{1 member} other{{count} members}}",
+  "@membersCount": {
+    "description": "Number of members in the hivemind",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "memberRoleOwner": "Owner",
+  "@memberRoleOwner": {
+    "description": "Role badge for hivemind owner"
+  },
+  "memberRoleMember": "Member",
+  "@memberRoleMember": {
+    "description": "Role badge for hivemind member"
+  },
+  "memberYou": "You",
+  "@memberYou": {
+    "description": "Badge marking the current user"
+  },
+  "memberJoinedDate": "Joined {date}",
+  "@memberJoinedDate": {
+    "description": "Subtitle showing member joined date",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteNewMember": "Invite person",
+  "@inviteNewMember": {
+    "description": "Button label to invite a person to the hivemind"
+  },
+  "noMembers": "No members found",
+  "@noMembers": {
+    "description": "Empty state when hivemind has no members"
+  },
+  "viewMembersTooltip": "View members ({count})",
+  "@viewMembersTooltip": {
+    "description": "Tooltip for member avatar pill",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

@@ -5,8 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../../../shared/widgets/minimal_button.dart';
-import '../../hiveminds/presentation/hivemind_invite_sheet.dart';
 import '../../hiveminds/presentation/hivemind_switcher_sheet.dart';
+import '../../hiveminds/presentation/widgets/member_avatar_pill.dart';
 import '../../hiveminds/providers/hivemind_provider.dart';
 import '../domain/reminder_model.dart';
 import '../providers/reminder_provider.dart';
@@ -380,21 +380,13 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
                   ),
                 ),
                 actions: [
-                  if (activeHivemind != null)
-                    IconButton(
-                      icon: const Icon(Icons.person_add_outlined, size: 24),
-                      tooltip: l10n.inviteMembers,
-                      style: IconButton.styleFrom(
-                        minimumSize: const Size(48, 48),
-                      ),
-                      onPressed: () {
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          builder: (_) => HivemindInviteSheet(hivemind: activeHivemind),
-                        );
-                      },
+                  if (activeHivemind != null) ...[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      child: MemberAvatarPill(hivemind: activeHivemind),
                     ),
+                    const SizedBox(width: 4),
+                  ],
                   IconButton(
                     icon: const Icon(Icons.account_circle_outlined, size: 26),
                     tooltip: l10n.account,

@@ -143,5 +143,14 @@
   "selectAssignee": "Mitglied auswählen",
   "assignedToUser": "Für {name}",
   "assignedToYou": "Für dich",
-  "completedBySingle": "Erledigt"
+  "completedBySingle": "Erledigt",
+  "membersTitle": "Mitglieder",
+  "membersCount": "{count, plural, =1{1 Mitglied} other{{count} Mitglieder}}",
+  "memberRoleOwner": "Eigentümer",
+  "memberRoleMember": "Mitglied",
+  "memberYou": "Du",
+  "memberJoinedDate": "Beigetreten am {date}",
+  "inviteNewMember": "Person einladen",
+  "noMembers": "Keine Mitglieder gefunden",
+  "viewMembersTooltip": "Mitglieder ansehen ({count})"
 }

@@ -895,6 +895,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Completed'**
   String get completedBySingle;
+
+  /// Title for the members sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Members'**
+  String get membersTitle;
+
+  /// Number of members in the hivemind
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 member} other{{count} members}}'**
+  String membersCount(int count);
+
+  /// Role badge for hivemind owner
+  ///
+  /// In en, this message translates to:
+  /// **'Owner'**
+  String get memberRoleOwner;
+
+  /// Role badge for hivemind member
+  ///
+  /// In en, this message translates to:
+  /// **'Member'**
+  String get memberRoleMember;
+
+  /// Badge marking the current user
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get memberYou;
+
+  /// Subtitle showing member joined date
+  ///
+  /// In en, this message translates to:
+  /// **'Joined {date}'**
+  String memberJoinedDate(String date);
+
+  /// Button label to invite a person to the hivemind
+  ///
+  /// In en, this message translates to:
+  /// **'Invite person'**
+  String get inviteNewMember;
+
+  /// Empty state when hivemind has no members
+  ///
+  /// In en, this message translates to:
+  /// **'No members found'**
+  String get noMembers;
+
+  /// Tooltip for member avatar pill
+  ///
+  /// In en, this message translates to:
+  /// **'View members ({count})'**
+  String viewMembersTooltip(int count);
 }
 
 class _AppLocalizationsDelegate

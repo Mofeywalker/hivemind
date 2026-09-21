@@ -452,4 +452,43 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get completedBySingle => 'Completed';
+
+  @override
+  String get membersTitle => 'Members';
+
+  @override
+  String membersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count members',
+      one: '1 member',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get memberRoleOwner => 'Owner';
+
+  @override
+  String get memberRoleMember => 'Member';
+
+  @override
+  String get memberYou => 'You';
+
+  @override
+  String memberJoinedDate(String date) {
+    return 'Joined $date';
+  }
+
+  @override
+  String get inviteNewMember => 'Invite person';
+
+  @override
+  String get noMembers => 'No members found';
+
+  @override
+  String viewMembersTooltip(int count) {
+    return 'View members ($count)';
+  }
 }
