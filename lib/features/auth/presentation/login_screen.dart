@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/l10n_extension.dart';
+import '../../../core/widgets/hivemind_logo.dart';
 import '../../../shared/widgets/minimal_button.dart';
 import '../../../shared/widgets/minimal_text_field.dart';
 
@@ -180,17 +181,19 @@ class _LoginScreenState extends State<LoginScreen> {
                     Row(
                       children: [
                         Container(
-                          width: 50,
-                          height: 50,
+                          width: 52,
+                          height: 52,
+                          padding: const EdgeInsets.all(9),
                           decoration: BoxDecoration(
-                            color: AppColors.primary.withValues(alpha: 0.15),
+                            color: AppColors.primary.withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: AppColors.primary.withValues(alpha: 0.25),
+                              width: 1,
+                            ),
                           ),
                           alignment: Alignment.center,
-                          child: const Text(
-                            '🐝',
-                            style: TextStyle(fontSize: 28),
-                          ),
+                          child: const HivemindLogo.icon(size: 34),
                         ),
                         const SizedBox(width: 14),
                         Text(

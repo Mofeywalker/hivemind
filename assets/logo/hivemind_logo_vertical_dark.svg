@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="100%" height="100%">
+  <defs>
+    <linearGradient id="vLogoGradDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FBBF24" />
+      <stop offset="100%" stop-color="#F59E0B" />
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(0, -10)">
+    <g fill="none" stroke="url(#vLogoGradDark)" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="128,42 157.44,59 157.44,93 128,110 98.56,93 98.56,59" stroke-width="9" />
+      <path d="M 102.44,109 L 73,92 L 43.56,109 L 43.56,143 L 73,160 L 92,149" stroke-width="9" />
+      <path d="M 102.44,109 L 128,152 L 153.56,109" stroke-width="10.5" />
+      <path d="M 153.56,109 L 183,92 L 212.44,109 L 212.44,143 L 183,160 L 164,149" stroke-width="9" />
+    </g>
+    <text x="128" y="198" text-anchor="middle" fill="#F8FAFC" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', sans-serif" font-size="24" font-weight="800" letter-spacing="3.5">HIVEMIND</text>
+    <text x="128" y="216" text-anchor="middle" fill="#94A3B8" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Segoe UI', sans-serif" font-size="8.5" font-weight="600" letter-spacing="1.8">SHARED REMINDERS</text>
+  </g>
+</svg>

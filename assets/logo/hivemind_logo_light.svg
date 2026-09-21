@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 80" width="100%" height="100%">
+  <defs>
+    <linearGradient id="logoGradLight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B" />
+      <stop offset="100%" stop-color="#D97706" />
+    </linearGradient>
+  </defs>
+
+  <!-- Scaled Icon Group (centered at ~40, 40, scale ~0.45) -->
+  <g transform="translate(-15, -16) scale(0.44)" fill="none" stroke="url(#logoGradLight)" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="128,42 157.44,59 157.44,93 128,110 98.56,93 98.56,59" stroke-width="10" />
+    <path d="M 102.44,109 L 73,92 L 43.56,109 L 43.56,143 L 73,160 L 92,149" stroke-width="10" />
+    <path d="M 102.44,109 L 128,152 L 153.56,109" stroke-width="12" />
+    <path d="M 153.56,109 L 183,92 L 212.44,109 L 212.44,143 L 183,160 L 164,149" stroke-width="10" />
+  </g>
+
+  <!-- Typography -->
+  <text x="88" y="49" fill="#0F172A" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', sans-serif" font-size="30" font-weight="800" letter-spacing="3.5">HIVEMIND</text>
+  <circle cx="308" cy="44" r="3.5" fill="#F59E0B" />
+</svg>
