@@ -141,8 +141,7 @@ final remindersGroupedProvider = Provider<Map<ReminderSection, List<Reminder>>>(
   };
 
   for (final r in reminders) {
-    final bool isCompletedForUser =
-        r.isCompleted || (currentUserId != null && r.completedByIds.contains(currentUserId));
+    final bool isCompletedForUser = r.isCompletedByUser(currentUserId);
 
     if (isCompletedForUser) {
       map[ReminderSection.completed]!.add(r);

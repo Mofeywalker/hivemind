@@ -597,5 +597,54 @@
   "everyWeekdayPrefix": "Every",
   "@everyWeekdayPrefix": {
     "description": "Prefix for recurring days like Every Mon, Wed"
+  },
+  "sectionCompletionRequirement": "COMPLETION",
+  "@sectionCompletionRequirement": {
+    "description": "Section header for who needs to complete the reminder"
+  },
+  "scopeAnyone": "One person",
+  "@scopeAnyone": {
+    "description": "Label for single person / anyone completion"
+  },
+  "scopeAnyoneSubtitle": "First to complete",
+  "@scopeAnyoneSubtitle": {
+    "description": "Subtitle for single person completion"
+  },
+  "scopeAssigned": "Assigned",
+  "@scopeAssigned": {
+    "description": "Label for assigned member completion"
+  },
+  "scopeAssignedSubtitle": "Specific member",
+  "@scopeAssignedSubtitle": {
+    "description": "Subtitle for assigned member completion"
+  },
+  "scopeAll": "All members",
+  "@scopeAll": {
+    "description": "Label for everyone individually completion"
+  },
+  "scopeAllSubtitle": "Everyone individually",
+  "@scopeAllSubtitle": {
+    "description": "Subtitle for everyone individually completion"
+  },
+  "selectAssignee": "Select member",
+  "@selectAssignee": {
+    "description": "Prompt to select member to assign"
+  },
+  "assignedToUser": "For {name}",
+  "@assignedToUser": {
+    "description": "Badge showing reminder is assigned to a specific user",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "assignedToYou": "For you",
+  "@assignedToYou": {
+    "description": "Badge showing reminder is assigned to current user"
+  },
+  "completedBySingle": "Completed",
+  "@completedBySingle": {
+    "description": "Badge showing single-person task is completed"
   }
 }

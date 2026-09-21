@@ -417,4 +417,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get everyWeekdayPrefix => 'Every';
+
+  @override
+  String get sectionCompletionRequirement => 'COMPLETION';
+
+  @override
+  String get scopeAnyone => 'One person';
+
+  @override
+  String get scopeAnyoneSubtitle => 'First to complete';
+
+  @override
+  String get scopeAssigned => 'Assigned';
+
+  @override
+  String get scopeAssignedSubtitle => 'Specific member';
+
+  @override
+  String get scopeAll => 'All members';
+
+  @override
+  String get scopeAllSubtitle => 'Everyone individually';
+
+  @override
+  String get selectAssignee => 'Select member';
+
+  @override
+  String assignedToUser(String name) {
+    return 'For $name';
+  }
+
+  @override
+  String get assignedToYou => 'For you';
+
+  @override
+  String get completedBySingle => 'Completed';
 }

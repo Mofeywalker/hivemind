@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import '../../../core/services/firebase_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../../../core/utils/recurrence_util.dart';
@@ -31,6 +32,8 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
   late TimeOfDay _selectedTime;
   late RecurrencePreset _selectedPreset;
   late Set<int> _selectedWeekdays;
+  late ReminderCompletionScope _selectedScope;
+  String? _selectedAssignedTo;
   bool _isLoading = false;
 
   @override
@@ -43,6 +46,8 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
       _selectedDate = edit.dueAt.toLocal();
       _selectedTime = TimeOfDay.fromDateTime(edit.dueAt.toLocal());
       _selectedPreset = RecurrenceUtil.presetFromRRule(edit.rrule);
+      _selectedScope = edit.completionScope;
+      _selectedAssignedTo = edit.assignedTo;
       final days = RecurrenceUtil.weekdaysFromRRule(edit.rrule);
       _selectedWeekdays = days.isNotEmpty
           ? Set<int>.from(days)
@@ -55,6 +60,8 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
         DateTime.now().add(const Duration(hours: 1)),
       );
       _selectedPreset = RecurrencePreset.none;
+      _selectedScope = ReminderCompletionScope.anyone;
+      _selectedAssignedTo = null;
       _selectedWeekdays = {_selectedDate.weekday};
     }
   }
@@ -165,6 +172,8 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
       );
 
       final edit = widget.reminderToEdit;
+      final assignedId = _selectedScope == ReminderCompletionScope.assigned ? _selectedAssignedTo : null;
+
       if (edit != null) {
         await ref.read(reminderRepositoryProvider).updateReminder(
           reminderId: edit.id,
@@ -172,6 +181,8 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
           notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
           dueAt: effectiveDueAt,
           rrule: rrule,
+          completionScope: _selectedScope,
+          assignedTo: assignedId,
         );
         await ref.read(remindersProvider.notifier).refresh();
       } else {
@@ -184,6 +195,8 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
           notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
           dueAt: effectiveDueAt,
           rrule: rrule,
+          completionScope: _selectedScope,
+          assignedTo: assignedId,
         );
         await ref.read(remindersProvider.notifier).refresh();
       }
@@ -421,6 +434,208 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
                 ),
               ],
             ),
+            const SizedBox(height: 22),
+
+            // Completion Requirement Section (Anyone, Assigned, All)
+            Text(
+              l10n.sectionCompletionRequirement,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1.2,
+                color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+              ),
+            ),
+            const SizedBox(height: 10),
+
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                ChoiceChip(
+                  avatar: Icon(
+                    Icons.bolt_rounded,
+                    size: 16,
+                    color: _selectedScope == ReminderCompletionScope.anyone
+                        ? AppColors.primary
+                        : (isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted),
+                  ),
+                  label: Text(l10n.scopeAnyone),
+                  selected: _selectedScope == ReminderCompletionScope.anyone,
+                  selectedColor: AppColors.primary.withValues(alpha: isDark ? 0.25 : 0.15),
+                  backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+                  labelStyle: TextStyle(
+                    fontSize: 13,
+                    fontWeight: _selectedScope == ReminderCompletionScope.anyone
+                        ? FontWeight.w600
+                        : FontWeight.w500,
+                    color: _selectedScope == ReminderCompletionScope.anyone
+                        ? AppColors.primary
+                        : (isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary),
+                  ),
+                  side: BorderSide(
+                    color: _selectedScope == ReminderCompletionScope.anyone
+                        ? AppColors.primary
+                        : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                    width: _selectedScope == ReminderCompletionScope.anyone ? 1.5 : 1,
+                  ),
+                  onSelected: (selected) {
+                    if (selected) {
+                      HapticFeedback.selectionClick();
+                      setState(() {
+                        _selectedScope = ReminderCompletionScope.anyone;
+                      });
+                    }
+                  },
+                ),
+                ChoiceChip(
+                  avatar: Icon(
+                    Icons.assignment_ind_outlined,
+                    size: 16,
+                    color: _selectedScope == ReminderCompletionScope.assigned
+                        ? AppColors.primary
+                        : (isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted),
+                  ),
+                  label: Text(l10n.scopeAssigned),
+                  selected: _selectedScope == ReminderCompletionScope.assigned,
+                  selectedColor: AppColors.primary.withValues(alpha: isDark ? 0.25 : 0.15),
+                  backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+                  labelStyle: TextStyle(
+                    fontSize: 13,
+                    fontWeight: _selectedScope == ReminderCompletionScope.assigned
+                        ? FontWeight.w600
+                        : FontWeight.w500,
+                    color: _selectedScope == ReminderCompletionScope.assigned
+                        ? AppColors.primary
+                        : (isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary),
+                  ),
+                  side: BorderSide(
+                    color: _selectedScope == ReminderCompletionScope.assigned
+                        ? AppColors.primary
+                        : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                    width: _selectedScope == ReminderCompletionScope.assigned ? 1.5 : 1,
+                  ),
+                  onSelected: (selected) {
+                    if (selected) {
+                      HapticFeedback.selectionClick();
+                      setState(() {
+                        _selectedScope = ReminderCompletionScope.assigned;
+                        final members = ref.read(activeHivemindMembersProvider).value ?? [];
+                        final currentUid = FirebaseService.currentUserId;
+                        if (_selectedAssignedTo == null && members.isNotEmpty) {
+                          _selectedAssignedTo = currentUid ?? members.first.userId;
+                        }
+                      });
+                    }
+                  },
+                ),
+                ChoiceChip(
+                  avatar: Icon(
+                    Icons.groups_outlined,
+                    size: 16,
+                    color: _selectedScope == ReminderCompletionScope.all
+                        ? AppColors.primary
+                        : (isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted),
+                  ),
+                  label: Text(l10n.scopeAll),
+                  selected: _selectedScope == ReminderCompletionScope.all,
+                  selectedColor: AppColors.primary.withValues(alpha: isDark ? 0.25 : 0.15),
+                  backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+                  labelStyle: TextStyle(
+                    fontSize: 13,
+                    fontWeight: _selectedScope == ReminderCompletionScope.all
+                        ? FontWeight.w600
+                        : FontWeight.w500,
+                    color: _selectedScope == ReminderCompletionScope.all
+                        ? AppColors.primary
+                        : (isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary),
+                  ),
+                  side: BorderSide(
+                    color: _selectedScope == ReminderCompletionScope.all
+                        ? AppColors.primary
+                        : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                    width: _selectedScope == ReminderCompletionScope.all ? 1.5 : 1,
+                  ),
+                  onSelected: (selected) {
+                    if (selected) {
+                      HapticFeedback.selectionClick();
+                      setState(() {
+                        _selectedScope = ReminderCompletionScope.all;
+                      });
+                    }
+                  },
+                ),
+              ],
+            ),
+
+            if (_selectedScope == ReminderCompletionScope.assigned) ...[
+              const SizedBox(height: 10),
+              Builder(
+                builder: (context) {
+                  final members = ref.watch(activeHivemindMembersProvider).value ?? [];
+                  final currentUid = FirebaseService.currentUserId;
+                  if (members.isEmpty) {
+                    return Text(
+                      l10n.selectAssignee,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+                      ),
+                    );
+                  }
+                  return Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: members.map((member) {
+                      final isSelected = _selectedAssignedTo == member.userId;
+                      final isYou = member.userId == currentUid;
+                      final labelText = isYou ? '${member.displayName} (${l10n.assignedToYou})' : member.displayName;
+
+                      return FilterChip(
+                        selected: isSelected,
+                        showCheckmark: false,
+                        avatar: CircleAvatar(
+                          radius: 10,
+                          backgroundColor: isSelected
+                              ? AppColors.primary
+                              : (isDark ? AppColors.darkSurfaceSubtle : AppColors.lightSurfaceSubtle),
+                          child: Text(
+                            member.displayName.isNotEmpty ? member.displayName[0].toUpperCase() : '?',
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700,
+                              color: isSelected ? Colors.black : (isDark ? Colors.white : Colors.black87),
+                            ),
+                          ),
+                        ),
+                        label: Text(labelText),
+                        labelStyle: TextStyle(
+                          fontSize: 12,
+                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                          color: isSelected
+                              ? AppColors.primary
+                              : (isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary),
+                        ),
+                        backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+                        selectedColor: AppColors.primary.withValues(alpha: isDark ? 0.25 : 0.15),
+                        side: BorderSide(
+                          color: isSelected
+                              ? AppColors.primary
+                              : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                          width: isSelected ? 1.5 : 1,
+                        ),
+                        onSelected: (_) {
+                          HapticFeedback.selectionClick();
+                          setState(() {
+                            _selectedAssignedTo = member.userId;
+                          });
+                        },
+                      );
+                    }).toList(),
+                  );
+                },
+              ),
+            ],
             const SizedBox(height: 22),
 
             // Recurrence Section

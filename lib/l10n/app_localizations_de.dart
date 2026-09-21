@@ -422,4 +422,39 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get everyWeekdayPrefix => 'Jeden';
+
+  @override
+  String get sectionCompletionRequirement => 'WER MUSS ERLEDIGEN?';
+
+  @override
+  String get scopeAnyone => 'Eine Person';
+
+  @override
+  String get scopeAnyoneSubtitle => 'Wer zuerst kommt';
+
+  @override
+  String get scopeAssigned => 'Zugewiesen';
+
+  @override
+  String get scopeAssignedSubtitle => 'Bestimmtes Mitglied';
+
+  @override
+  String get scopeAll => 'Alle Mitglieder';
+
+  @override
+  String get scopeAllSubtitle => 'Jeder einzeln';
+
+  @override
+  String get selectAssignee => 'Mitglied auswählen';
+
+  @override
+  String assignedToUser(String name) {
+    return 'Für $name';
+  }
+
+  @override
+  String get assignedToYou => 'Für dich';
+
+  @override
+  String get completedBySingle => 'Erledigt';
 }

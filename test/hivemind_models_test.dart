@@ -48,10 +48,12 @@ void main() {
       final json = reminder.toJson();
       expect(json['id'], 'rem-1');
       expect(json['rrule'], 'RRULE:FREQ=WEEKLY;BYDAY=MO');
+      expect(json['completion_scope'], 'anyone');
 
       final fromJson = Reminder.fromJson(json);
       expect(fromJson.title, 'Weekly Standup');
       expect(fromJson.isRecurring, isTrue);
+      expect(fromJson.completionScope, ReminderCompletionScope.anyone);
 
       final completedCopy = reminder.copyWith(isCompleted: true);
       expect(completedCopy.isCompleted, isTrue);

@@ -829,6 +829,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Every'**
   String get everyWeekdayPrefix;
+
+  /// Section header for who needs to complete the reminder
+  ///
+  /// In en, this message translates to:
+  /// **'COMPLETION'**
+  String get sectionCompletionRequirement;
+
+  /// Label for single person / anyone completion
+  ///
+  /// In en, this message translates to:
+  /// **'One person'**
+  String get scopeAnyone;
+
+  /// Subtitle for single person completion
+  ///
+  /// In en, this message translates to:
+  /// **'First to complete'**
+  String get scopeAnyoneSubtitle;
+
+  /// Label for assigned member completion
+  ///
+  /// In en, this message translates to:
+  /// **'Assigned'**
+  String get scopeAssigned;
+
+  /// Subtitle for assigned member completion
+  ///
+  /// In en, this message translates to:
+  /// **'Specific member'**
+  String get scopeAssignedSubtitle;
+
+  /// Label for everyone individually completion
+  ///
+  /// In en, this message translates to:
+  /// **'All members'**
+  String get scopeAll;
+
+  /// Subtitle for everyone individually completion
+  ///
+  /// In en, this message translates to:
+  /// **'Everyone individually'**
+  String get scopeAllSubtitle;
+
+  /// Prompt to select member to assign
+  ///
+  /// In en, this message translates to:
+  /// **'Select member'**
+  String get selectAssignee;
+
+  /// Badge showing reminder is assigned to a specific user
+  ///
+  /// In en, this message translates to:
+  /// **'For {name}'**
+  String assignedToUser(String name);
+
+  /// Badge showing reminder is assigned to current user
+  ///
+  /// In en, this message translates to:
+  /// **'For you'**
+  String get assignedToYou;
+
+  /// Badge showing single-person task is completed
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get completedBySingle;
 }
 
 class _AppLocalizationsDelegate

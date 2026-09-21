@@ -56,6 +56,14 @@ class ReminderCard extends ConsumerWidget {
     final bool isCompletedByUser = reminder.isCompletedByUser(currentUserId);
     final isPast = reminder.dueAt.isBefore(DateTime.now()) && !isCompletedByUser;
 
+    final members = ref.watch(activeHivemindMembersProvider).value;
+    final assignedMember = reminder.assignedTo != null
+        ? members?.where((m) => m.userId == reminder.assignedTo).firstOrNull
+        : null;
+    final assignedLabel = reminder.assignedTo == currentUserId
+        ? l10n.assignedToYou
+        : (assignedMember != null ? l10n.assignedToUser(assignedMember.displayName) : l10n.scopeAssigned);
+
     final cardContent = CardContainer(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       padding: const EdgeInsets.only(left: 8, right: 16, top: 12, bottom: 14),
@@ -309,6 +317,22 @@ class ReminderCard extends ConsumerWidget {
                             color: AppColors.primary,
                           ),
 
+                        // Assigned Pill (if assigned scope and not completed)
+                        if (!isCompletedByUser && reminder.completionScope == ReminderCompletionScope.assigned)
+                          StatusPill(
+                            label: assignedLabel,
+                            icon: Icons.assignment_ind_outlined,
+                            color: reminder.assignedTo == currentUserId ? AppColors.primary : (isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary),
+                          ),
+
+                        // All members Pill (if all scope and not completed, in multi-member hivemind)
+                        if (!isCompletedByUser && reminder.completionScope == ReminderCompletionScope.all && totalMembersCount > 1)
+                          StatusPill(
+                            label: l10n.scopeAll,
+                            icon: Icons.groups_outlined,
+                            color: AppColors.primary,
+                          ),
+
                         // Overdue Pill
                         if (isPast)
                           StatusPill(
@@ -319,21 +343,29 @@ class ReminderCard extends ConsumerWidget {
 
                         // Member Completion Pills
                         if (isCompletedByUser) ...[
-                          if (canBeDeleted)
+                          if (reminder.completionScope == ReminderCompletionScope.all) ...[
+                            if (canBeDeleted)
+                              StatusPill(
+                                label: l10n.completedByAll,
+                                icon: Icons.done_all_rounded,
+                                color: AppColors.success,
+                              )
+                            else
+                              StatusPill(
+                                label: totalMembersCount > 1
+                                    ? '${l10n.completedFraction(completedCount, totalMembersCount)} • ${l10n.waitingForMembers}'
+                                    : l10n.waitingForMembers,
+                                icon: Icons.hourglass_top_rounded,
+                                color: AppColors.primary,
+                              ),
+                          ] else ...[
                             StatusPill(
-                              label: l10n.completedByAll,
+                              label: l10n.completedBySingle,
                               icon: Icons.done_all_rounded,
                               color: AppColors.success,
-                            )
-                          else
-                            StatusPill(
-                              label: totalMembersCount > 1
-                                  ? '${l10n.completedFraction(completedCount, totalMembersCount)} • ${l10n.waitingForMembers}'
-                                  : l10n.waitingForMembers,
-                              icon: Icons.hourglass_top_rounded,
-                              color: AppColors.primary,
                             ),
-                        ] else if (completedCount > 0 && totalMembersCount > 1) ...[
+                          ],
+                        ] else if (reminder.completionScope == ReminderCompletionScope.all && completedCount > 0 && totalMembersCount > 1) ...[
                           StatusPill(
                             label: l10n.completedFraction(completedCount, totalMembersCount),
                             icon: Icons.people_outline_rounded,

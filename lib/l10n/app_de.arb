@@ -132,5 +132,16 @@
   "presetWeekdaysOnly": "Mo - Fr",
   "presetWeekendsOnly": "Sa - So",
   "presetAllDays": "Alle",
-  "everyWeekdayPrefix": "Jeden"
+  "everyWeekdayPrefix": "Jeden",
+  "sectionCompletionRequirement": "WER MUSS ERLEDIGEN?",
+  "scopeAnyone": "Eine Person",
+  "scopeAnyoneSubtitle": "Wer zuerst kommt",
+  "scopeAssigned": "Zugewiesen",
+  "scopeAssignedSubtitle": "Bestimmtes Mitglied",
+  "scopeAll": "Alle Mitglieder",
+  "scopeAllSubtitle": "Jeder einzeln",
+  "selectAssignee": "Mitglied auswählen",
+  "assignedToUser": "Für {name}",
+  "assignedToYou": "Für dich",
+  "completedBySingle": "Erledigt"
 }

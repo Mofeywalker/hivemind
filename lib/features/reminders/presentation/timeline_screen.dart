@@ -99,7 +99,7 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
 
   void _toggleSelectAll(List<Reminder> completedList, Set<String> memberUserIds) {
     final eligibleIds = completedList
-        .where((r) => r.isCompletedByAll(memberUserIds))
+        .where((r) => r.isFullyCompleted(memberUserIds))
         .map((r) => r.id)
         .toSet();
 
@@ -259,7 +259,7 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
     final completedList = remindersGrouped[ReminderSection.completed] ?? [];
 
     final eligibleCompletedCount = completedList
-        .where((r) => r.isCompletedByAll(memberUserIds))
+        .where((r) => r.isFullyCompleted(memberUserIds))
         .length;
 
     final hasAnyReminders = todayList.isNotEmpty ||
@@ -558,7 +558,7 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
                           case _CompletedHeaderItem(:final count):
                             return _buildCompletedHeader(count);
                           case _CompletedReminderRowItem(:final reminder):
-                            final canBeDeleted = reminder.isCompletedByAll(memberUserIds);
+                            final canBeDeleted = reminder.isFullyCompleted(memberUserIds);
                             return ReminderCard(
                               key: ValueKey('completed_${reminder.id}'),
                               reminder: reminder,

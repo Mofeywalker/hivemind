@@ -71,6 +71,8 @@ class ReminderRepository {
     String? notes,
     required DateTime dueAt,
     String? rrule,
+    ReminderCompletionScope completionScope = ReminderCompletionScope.anyone,
+    String? assignedTo,
   }) async {
     final userId = _auth.currentUser?.uid;
     final docRef = _firestore.collection('reminders').doc();
@@ -88,6 +90,8 @@ class ReminderRepository {
       'completed_by': null,
       'completed_by_ids': <String>[],
       'created_by': userId,
+      'completion_scope': completionScope.name,
+      'assigned_to': assignedTo,
       'created_at': nowIso,
       'updated_at': nowIso,
     };
@@ -115,15 +119,22 @@ class ReminderRepository {
     String? notes,
     required DateTime dueAt,
     String? rrule,
+    ReminderCompletionScope? completionScope,
+    String? assignedTo,
   }) async {
     final nowIso = DateTime.now().toUtc().toIso8601String();
-    final updates = {
+    final Map<String, dynamic> updates = {
       'title': title.trim(),
       'notes': notes?.trim(),
       'due_at': dueAt.toUtc().toIso8601String(),
       'rrule': rrule,
       'updated_at': nowIso,
     };
+
+    if (completionScope != null) {
+      updates['completion_scope'] = completionScope.name;
+    }
+    updates['assigned_to'] = assignedTo;
 
     final docRef = _firestore.collection('reminders').doc(reminderId);
     await docRef.update(updates);
@@ -155,23 +166,57 @@ class ReminderRepository {
     final userId = _auth.currentUser?.uid;
     final List<String> updatedCompletedByIds = List<String>.from(reminder.completedByIds);
 
-    final bool isCurrentlyCompletedByUser = userId != null
-        ? updatedCompletedByIds.contains(userId)
-        : reminder.isCompleted;
+    final bool allMembersCompleted;
 
-    if (userId != null) {
-      if (isCurrentlyCompletedByUser) {
-        updatedCompletedByIds.remove(userId);
+    if (reminder.completionScope == ReminderCompletionScope.anyone) {
+      final isCurrentlyCompleted = reminder.isCompleted || updatedCompletedByIds.isNotEmpty;
+      if (isCurrentlyCompleted) {
+        allMembersCompleted = false;
+        updatedCompletedByIds.clear();
       } else {
-        updatedCompletedByIds.add(userId);
+        allMembersCompleted = true;
+        if (userId != null) {
+          updatedCompletedByIds.add(userId);
+        }
       }
-    }
+    } else if (reminder.completionScope == ReminderCompletionScope.assigned) {
+      final assignedId = reminder.assignedTo;
+      final isCurrentlyCompleted = reminder.isCompleted ||
+          (assignedId != null && updatedCompletedByIds.contains(assignedId)) ||
+          (userId != null && updatedCompletedByIds.contains(userId));
 
-    // Determine if all hive members have completed it
-    final memberIds = hiveMemberUserIds?.toList() ?? (userId != null ? [userId] : <String>[]);
-    final bool allMembersCompleted = memberIds.isNotEmpty
-        ? memberIds.every(updatedCompletedByIds.contains)
-        : (userId != null ? updatedCompletedByIds.contains(userId) : !reminder.isCompleted);
+      if (isCurrentlyCompleted) {
+        allMembersCompleted = false;
+        if (userId != null) updatedCompletedByIds.remove(userId);
+        if (assignedId != null) updatedCompletedByIds.remove(assignedId);
+      } else {
+        allMembersCompleted = true;
+        if (userId != null && !updatedCompletedByIds.contains(userId)) {
+          updatedCompletedByIds.add(userId);
+        }
+        if (assignedId != null && !updatedCompletedByIds.contains(assignedId)) {
+          updatedCompletedByIds.add(assignedId);
+        }
+      }
+    } else {
+      // ReminderCompletionScope.all: Every member must complete
+      final bool isCurrentlyCompletedByUser = userId != null
+          ? updatedCompletedByIds.contains(userId)
+          : reminder.isCompleted;
+
+      if (userId != null) {
+        if (isCurrentlyCompletedByUser) {
+          updatedCompletedByIds.remove(userId);
+        } else {
+          updatedCompletedByIds.add(userId);
+        }
+      }
+
+      final memberIds = hiveMemberUserIds?.toList() ?? (userId != null ? [userId] : <String>[]);
+      allMembersCompleted = memberIds.isNotEmpty
+          ? memberIds.every(updatedCompletedByIds.contains)
+          : (userId != null ? updatedCompletedByIds.contains(userId) : !reminder.isCompleted);
+    }
 
     final docRef = _firestore.collection('reminders').doc(reminder.id);
 
