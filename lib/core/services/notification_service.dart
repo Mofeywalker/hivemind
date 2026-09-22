@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
@@ -23,7 +24,7 @@ class NotificationService {
   static Future<void> initialize({
     void Function(NotificationResponse)? onNotificationTap,
   }) async {
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings = AndroidInitializationSettings('@drawable/ic_notification');
     const darwinSettings = DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
@@ -90,6 +91,8 @@ class NotificationService {
         activityChannelId,
         activityChannelName,
         channelDescription: activityChannelDescription,
+        icon: '@drawable/ic_notification',
+        color: const Color(0xFFF59E0B),
         importance: Importance.max,
         priority: Priority.high,
         playSound: true,
@@ -136,6 +139,8 @@ class NotificationService {
         channelId,
         channelName,
         channelDescription: channelDescription,
+        icon: '@drawable/ic_notification',
+        color: const Color(0xFFF59E0B),
         importance: Importance.high,
         priority: Priority.high,
         playSound: true,
