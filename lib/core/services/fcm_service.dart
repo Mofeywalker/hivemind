@@ -5,12 +5,36 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'notification_service.dart';
+import 'timezone_service.dart';
 
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   try {
     await Firebase.initializeApp();
+    await TimezoneService.initialize();
+    await NotificationService.initialize();
+
     debugPrint('FCM background message received: ${message.messageId}');
+
+    final data = message.data;
+    final reminderId = data['reminder_id'] ?? data['id'];
+    final title = data['title'] ?? message.notification?.title;
+    final notes = data['notes'] ?? message.notification?.body;
+    final rawDueAt = data['due_at']?.toString();
+
+    if (reminderId != null && title != null && rawDueAt != null && rawDueAt.isNotEmpty) {
+      final dueAt = DateTime.tryParse(rawDueAt);
+      if (dueAt != null && dueAt.isAfter(DateTime.now())) {
+        await NotificationService.scheduleReminder(
+          id: reminderId.hashCode,
+          title: title.toString(),
+          body: notes?.toString(),
+          scheduledDate: dueAt,
+          payload: reminderId.toString(),
+        );
+        debugPrint('Scheduled background reminder #$reminderId for $dueAt');
+      }
+    }
   } catch (e) {
     debugPrint('Error in FCM background handler: $e');
   }
@@ -86,6 +110,7 @@ class FcmService {
         final title = notification?.title ?? data['title'] ?? 'Neuer Reminder';
         final body = notification?.body ?? data['body'] ?? '';
         final reminderId = data['reminder_id'] ?? data['id'];
+        final rawDueAt = data['due_at']?.toString();
 
         NotificationService.showNotification(
           id: (reminderId ?? title).hashCode,
@@ -93,6 +118,20 @@ class FcmService {
           body: body,
           payload: reminderId?.toString(),
         );
+
+        if (reminderId != null && rawDueAt != null && rawDueAt.isNotEmpty) {
+          final dueAt = DateTime.tryParse(rawDueAt);
+          if (dueAt != null && dueAt.isAfter(DateTime.now())) {
+            NotificationService.scheduleReminder(
+              id: reminderId.hashCode,
+              title: title,
+              body: data['notes']?.toString() ?? body,
+              scheduledDate: dueAt,
+              payload: reminderId.toString(),
+            );
+            debugPrint('Scheduled foreground reminder #$reminderId for $dueAt');
+          }
+        }
       });
 
       // Handle notification interaction when app is in background

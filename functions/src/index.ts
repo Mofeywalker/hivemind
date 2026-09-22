@@ -72,6 +72,8 @@ export const notifyReminder = onDocumentCreated("reminders/{reminderId}", async 
       data: {
         reminder_id: reminderId,
         hivemind_id: hivemindId,
+        title: title,
+        notes: reminder.notes || "",
         due_at: reminder.due_at || "",
         click_action: "FLUTTER_NOTIFICATION_CLICK",
       },
