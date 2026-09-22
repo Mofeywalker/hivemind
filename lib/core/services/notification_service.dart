@@ -158,19 +158,56 @@ class NotificationService {
         iOS: darwinDetails,
       );
 
+      AndroidScheduleMode scheduleMode = AndroidScheduleMode.exactAllowWhileIdle;
+      if (!kIsWeb && Platform.isAndroid) {
+        final androidImpl = _plugin
+            .resolvePlatformSpecificImplementation<
+                AndroidFlutterLocalNotificationsPlugin>();
+        final canExact = await androidImpl?.canScheduleExactAlarms() ?? false;
+        if (!canExact) {
+          scheduleMode = AndroidScheduleMode.inexactAllowWhileIdle;
+          debugPrint(
+              'Exact alarms not permitted. Falling back to inexactAllowWhileIdle for reminder #$id');
+        }
+      }
+
       await _plugin.zonedSchedule(
         id,
         title,
         body,
         tzScheduled,
         details,
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        androidScheduleMode: scheduleMode,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
         payload: payload,
       );
     } catch (e) {
       debugPrint('Error scheduling notification #$id: $e');
+    }
+  }
+
+  static Future<bool> canScheduleExactAlarms() async {
+    if (kIsWeb || !Platform.isAndroid) return true;
+    try {
+      final androidImpl = _plugin
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>();
+      return await androidImpl?.canScheduleExactAlarms() ?? false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  static Future<void> requestExactAlarmsPermission() async {
+    if (kIsWeb || !Platform.isAndroid) return;
+    try {
+      final androidImpl = _plugin
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>();
+      await androidImpl?.requestExactAlarmsPermission();
+    } catch (e) {
+      debugPrint('Error requesting exact alarms permission: $e');
     }
   }
 
