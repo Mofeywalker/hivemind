@@ -29,9 +29,7 @@ class ProfileScreen extends ConsumerWidget {
     final currentThemeMode = ref.watch(themeProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.accountAndSettings),
-      ),
+      appBar: AppBar(title: Text(l10n.accountAndSettings)),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
@@ -65,7 +63,9 @@ class ProfileScreen extends ConsumerWidget {
                               fontSize: 18,
                               fontWeight: FontWeight.w700,
                               letterSpacing: -0.3,
-                              color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                              color: isDark
+                                  ? AppColors.darkTextPrimary
+                                  : AppColors.lightTextPrimary,
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -73,7 +73,9 @@ class ProfileScreen extends ConsumerWidget {
                             l10n.hivemindMember,
                             style: TextStyle(
                               fontSize: 14,
-                              color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                              color: isDark
+                                  ? AppColors.darkTextSecondary
+                                  : AppColors.lightTextSecondary,
                             ),
                           ),
                         ],
@@ -90,13 +92,18 @@ class ProfileScreen extends ConsumerWidget {
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 0.5,
-                  color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                  color: isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary,
                 ),
               ),
               const SizedBox(height: 12),
 
               CardContainer(
-                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 14,
+                ),
                 child: Column(
                   children: [
                     Row(
@@ -104,12 +111,17 @@ class ProfileScreen extends ConsumerWidget {
                       children: [
                         Text(
                           l10n.version,
-                          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15.5),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15.5,
+                          ),
                         ),
                         Text(
                           '1.0.0',
                           style: TextStyle(
-                            color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                            color: isDark
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary,
                             fontSize: 15.5,
                           ),
                         ),
@@ -121,17 +133,24 @@ class ProfileScreen extends ConsumerWidget {
                       children: [
                         Text(
                           l10n.theme,
-                          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15.5),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15.5,
+                          ),
                         ),
                         DropdownButtonHideUnderline(
                           child: DropdownButton<ThemeMode>(
                             value: currentThemeMode,
                             isDense: true,
                             style: TextStyle(
-                              color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                              color: isDark
+                                  ? AppColors.darkTextSecondary
+                                  : AppColors.lightTextSecondary,
                               fontSize: 15,
                             ),
-                            dropdownColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+                            dropdownColor: isDark
+                                ? AppColors.darkSurface
+                                : AppColors.lightSurface,
                             items: [
                               DropdownMenuItem(
                                 value: ThemeMode.system,
@@ -148,7 +167,9 @@ class ProfileScreen extends ConsumerWidget {
                             ],
                             onChanged: (val) {
                               if (val != null) {
-                                ref.read(themeProvider.notifier).setThemeMode(val);
+                                ref
+                                    .read(themeProvider.notifier)
+                                    .setThemeMode(val);
                               }
                             },
                           ),
@@ -161,17 +182,24 @@ class ProfileScreen extends ConsumerWidget {
                       children: [
                         Text(
                           l10n.language,
-                          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15.5),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15.5,
+                          ),
                         ),
                         DropdownButtonHideUnderline(
                           child: DropdownButton<AppLanguage>(
                             value: currentLanguage,
                             isDense: true,
                             style: TextStyle(
-                              color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                              color: isDark
+                                  ? AppColors.darkTextSecondary
+                                  : AppColors.lightTextSecondary,
                               fontSize: 15,
                             ),
-                            dropdownColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+                            dropdownColor: isDark
+                                ? AppColors.darkSurface
+                                : AppColors.lightSurface,
                             items: [
                               DropdownMenuItem(
                                 value: AppLanguage.system,
@@ -188,7 +216,9 @@ class ProfileScreen extends ConsumerWidget {
                             ],
                             onChanged: (val) {
                               if (val != null) {
-                                ref.read(localeProvider.notifier).setLanguage(val);
+                                ref
+                                    .read(localeProvider.notifier)
+                                    .setLanguage(val);
                               }
                             },
                           ),
@@ -205,7 +235,11 @@ class ProfileScreen extends ConsumerWidget {
               MinimalButton(
                 text: l10n.signOut,
                 variant: MinimalButtonVariant.danger,
-                icon: const Icon(Icons.logout, size: 18, color: AppColors.error),
+                icon: const Icon(
+                  Icons.logout,
+                  size: 18,
+                  color: AppColors.error,
+                ),
                 onPressed: () => _handleSignOut(context),
               ),
               const SizedBox(height: 16),

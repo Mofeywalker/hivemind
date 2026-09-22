@@ -21,9 +21,15 @@ class AppColors {
   static const Color lightSurfaceSubtle = Color(0xFFF1F5F9);
   static const Color lightBorder = Color(0xFFE2E8F0);
   static const Color lightBorderSubtle = Color(0xFFF1F5F9);
-  static const Color lightTextPrimary = Color(0xFF0F172A); // High-contrast Slate 900
-  static const Color lightTextSecondary = Color(0xFF475569); // Slate 600 (contrast ratio > 5.5:1)
-  static const Color lightTextMuted = Color(0xFF64748B); // Slate 500 (contrast ratio > 4.5:1)
+  static const Color lightTextPrimary = Color(
+    0xFF0F172A,
+  ); // High-contrast Slate 900
+  static const Color lightTextSecondary = Color(
+    0xFF475569,
+  ); // Slate 600 (contrast ratio > 5.5:1)
+  static const Color lightTextMuted = Color(
+    0xFF64748B,
+  ); // Slate 500 (contrast ratio > 4.5:1)
 
   // Dark Mode Palette (Obsidian / High Contrast Minimalist)
   static const Color darkBackground = Color(0xFF090A0F);
@@ -32,6 +38,8 @@ class AppColors {
   static const Color darkBorder = Color(0xFF2E3446);
   static const Color darkBorderSubtle = Color(0xFF222634);
   static const Color darkTextPrimary = Color(0xFFF8FAFC);
-  static const Color darkTextSecondary = Color(0xFF94A3B8); // High contrast on dark
+  static const Color darkTextSecondary = Color(
+    0xFF94A3B8,
+  ); // High contrast on dark
   static const Color darkTextMuted = Color(0xFF7E8B9B); // High contrast on dark
 }

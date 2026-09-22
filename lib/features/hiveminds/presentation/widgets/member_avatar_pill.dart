@@ -11,11 +11,7 @@ class MemberAvatarPill extends ConsumerWidget {
   final Hivemind hivemind;
   final VoidCallback? onTap;
 
-  const MemberAvatarPill({
-    super.key,
-    required this.hivemind,
-    this.onTap,
-  });
+  const MemberAvatarPill({super.key, required this.hivemind, this.onTap});
 
   void _handleTap(BuildContext context) {
     if (onTap != null) {
@@ -51,7 +47,9 @@ class MemberAvatarPill extends ConsumerWidget {
             constraints: const BoxConstraints(minHeight: 36, minWidth: 44),
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
             decoration: BoxDecoration(
-              color: isDark ? AppColors.darkSurfaceSubtle : AppColors.lightSurfaceSubtle,
+              color: isDark
+                  ? AppColors.darkSurfaceSubtle
+                  : AppColors.lightSurfaceSubtle,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
                 color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
@@ -65,7 +63,9 @@ class MemberAvatarPill extends ConsumerWidget {
                   Icon(
                     Icons.people_outline_rounded,
                     size: 18,
-                    color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
                   )
                 else
                   _buildAvatarStack(members, isDark),
@@ -91,11 +91,7 @@ class MemberAvatarPill extends ConsumerWidget {
       widgets.add(
         Padding(
           padding: EdgeInsets.only(left: i == 0 ? 0 : 0),
-          child: _MicroAvatar(
-            member: member,
-            size: avatarSize,
-            isDark: isDark,
-          ),
+          child: _MicroAvatar(member: member, size: avatarSize, isDark: isDark),
         ),
       );
     }
@@ -110,7 +106,9 @@ class MemberAvatarPill extends ConsumerWidget {
             color: isDark ? const Color(0xFF222634) : const Color(0xFFE2E8F0),
             shape: BoxShape.circle,
             border: Border.all(
-              color: isDark ? AppColors.darkSurfaceSubtle : AppColors.lightSurfaceSubtle,
+              color: isDark
+                  ? AppColors.darkSurfaceSubtle
+                  : AppColors.lightSurfaceSubtle,
               width: 1.5,
             ),
           ),
@@ -119,7 +117,9 @@ class MemberAvatarPill extends ConsumerWidget {
             style: TextStyle(
               fontSize: 9.5,
               fontWeight: FontWeight.w800,
-              color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+              color: isDark
+                  ? AppColors.darkTextPrimary
+                  : AppColors.lightTextPrimary,
             ),
           ),
         ),
@@ -134,10 +134,7 @@ class MemberAvatarPill extends ConsumerWidget {
         clipBehavior: Clip.none,
         children: [
           for (int i = 0; i < widgets.length; i++)
-            Positioned(
-              left: i * (avatarSize - overlap),
-              child: widgets[i],
-            ),
+            Positioned(left: i * (avatarSize - overlap), child: widgets[i]),
         ],
       ),
     );
@@ -157,7 +154,9 @@ class _MicroAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final borderColor = isDark ? AppColors.darkSurfaceSubtle : AppColors.lightSurfaceSubtle;
+    final borderColor = isDark
+        ? AppColors.darkSurfaceSubtle
+        : AppColors.lightSurfaceSubtle;
     final initial = member.displayName.isNotEmpty
         ? member.displayName.substring(0, 1).toUpperCase()
         : '?';
@@ -176,7 +175,8 @@ class _MicroAvatar extends StatelessWidget {
             width: size,
             height: size,
             fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => _buildFallback(initial, borderColor),
+            errorBuilder: (context, error, stackTrace) =>
+                _buildFallback(initial, borderColor),
           ),
         ),
       );

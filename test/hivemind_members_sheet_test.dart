@@ -43,7 +43,9 @@ void main() {
       await tester.pumpWidget(
         _buildTestableSheet(
           overrides: [
-            activeHivemindMembersProvider.overrideWith((ref) => Stream.value([])),
+            activeHivemindMembersProvider.overrideWith(
+              (ref) => Stream.value([]),
+            ),
           ],
           child: HivemindMembersSheet(hivemind: testHivemind),
         ),
@@ -55,7 +57,9 @@ void main() {
       expect(find.text('Person einladen'), findsOneWidget);
     });
 
-    testWidgets('renders member list with roles and Du badge in German', (tester) async {
+    testWidgets('renders member list with roles and Du badge in German', (
+      tester,
+    ) async {
       final members = [
         HivemindMember(
           userId: 'user-self',
@@ -77,7 +81,9 @@ void main() {
         _buildTestableSheet(
           locale: const Locale('de'),
           overrides: [
-            activeHivemindMembersProvider.overrideWith((ref) => Stream.value(members)),
+            activeHivemindMembersProvider.overrideWith(
+              (ref) => Stream.value(members),
+            ),
           ],
           child: HivemindMembersSheet(
             hivemind: testHivemind,
@@ -112,7 +118,9 @@ void main() {
         _buildTestableSheet(
           locale: const Locale('en'),
           overrides: [
-            activeHivemindMembersProvider.overrideWith((ref) => Stream.value(members)),
+            activeHivemindMembersProvider.overrideWith(
+              (ref) => Stream.value(members),
+            ),
           ],
           child: HivemindMembersSheet(
             hivemind: testHivemind,

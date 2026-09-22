@@ -44,39 +44,48 @@ void main() {
       );
     }
 
-    testWidgets('Displays "Von allen abgehakt" when task is completed by all members', (tester) async {
-      await tester.pumpWidget(
-        createTestableWidget(
-          ReminderCard(
-            reminder: completedByAllReminder,
-            canBeDeleted: true,
-            completedCount: 2,
-            totalMembersCount: 2,
+    testWidgets(
+      'Displays "Von allen abgehakt" when task is completed by all members',
+      (tester) async {
+        await tester.pumpWidget(
+          createTestableWidget(
+            ReminderCard(
+              reminder: completedByAllReminder,
+              canBeDeleted: true,
+              completedCount: 2,
+              totalMembersCount: 2,
+            ),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
+        );
+        await tester.pumpAndSettle();
 
-      expect(find.text('Küche putzen'), findsOneWidget);
-      expect(find.text('Von allen abgehakt'), findsOneWidget);
-    });
+        expect(find.text('Küche putzen'), findsOneWidget);
+        expect(find.text('Von allen abgehakt'), findsOneWidget);
+      },
+    );
 
-    testWidgets('Displays "1 von 2 abgehakt • Wartet auf Mitglieder" when waiting for members', (tester) async {
-      await tester.pumpWidget(
-        createTestableWidget(
-          ReminderCard(
-            reminder: partiallyCompletedReminder,
-            canBeDeleted: false,
-            completedCount: 1,
-            totalMembersCount: 2,
+    testWidgets(
+      'Displays "1 von 2 abgehakt • Wartet auf Mitglieder" when waiting for members',
+      (tester) async {
+        await tester.pumpWidget(
+          createTestableWidget(
+            ReminderCard(
+              reminder: partiallyCompletedReminder,
+              canBeDeleted: false,
+              completedCount: 1,
+              totalMembersCount: 2,
+            ),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
+        );
+        await tester.pumpAndSettle();
 
-      expect(find.text('Müll runterbringen'), findsOneWidget);
-      expect(find.text('1 von 2 abgehakt • Wartet auf Mitglieder'), findsOneWidget);
-    });
+        expect(find.text('Müll runterbringen'), findsOneWidget);
+        expect(
+          find.text('1 von 2 abgehakt • Wartet auf Mitglieder'),
+          findsOneWidget,
+        );
+      },
+    );
 
     testWidgets('Long press triggers onLongPress callback', (tester) async {
       bool longPressed = false;
@@ -102,59 +111,70 @@ void main() {
       expect(longPressed, isTrue);
     });
 
-    testWidgets('In selection mode: Tapping an eligible task toggles selection', (tester) async {
-      bool? selectedValue;
+    testWidgets(
+      'In selection mode: Tapping an eligible task toggles selection',
+      (tester) async {
+        bool? selectedValue;
 
-      await tester.pumpWidget(
-        createTestableWidget(
-          ReminderCard(
-            reminder: completedByAllReminder,
-            isSelectionMode: true,
-            isSelected: false,
-            canBeDeleted: true,
-            completedCount: 2,
-            totalMembersCount: 2,
-            onSelectedChanged: (val) {
-              selectedValue = val;
-            },
+        await tester.pumpWidget(
+          createTestableWidget(
+            ReminderCard(
+              reminder: completedByAllReminder,
+              isSelectionMode: true,
+              isSelected: false,
+              canBeDeleted: true,
+              completedCount: 2,
+              totalMembersCount: 2,
+              onSelectedChanged: (val) {
+                selectedValue = val;
+              },
+            ),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
+        );
+        await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Küche putzen'));
-      await tester.pumpAndSettle();
+        await tester.tap(find.text('Küche putzen'));
+        await tester.pumpAndSettle();
 
-      expect(selectedValue, isTrue);
-    });
+        expect(selectedValue, isTrue);
+      },
+    );
 
-    testWidgets('In selection mode: Tapping an ineligible task shows snackbar and blocks selection', (tester) async {
-      bool? selectedValue;
+    testWidgets(
+      'In selection mode: Tapping an ineligible task shows snackbar and blocks selection',
+      (tester) async {
+        bool? selectedValue;
 
-      await tester.pumpWidget(
-        createTestableWidget(
-          ReminderCard(
-            reminder: partiallyCompletedReminder,
-            isSelectionMode: true,
-            isSelected: false,
-            canBeDeleted: false,
-            completedCount: 1,
-            totalMembersCount: 2,
-            onSelectedChanged: (val) {
-              selectedValue = val;
-            },
+        await tester.pumpWidget(
+          createTestableWidget(
+            ReminderCard(
+              reminder: partiallyCompletedReminder,
+              isSelectionMode: true,
+              isSelected: false,
+              canBeDeleted: false,
+              completedCount: 1,
+              totalMembersCount: 2,
+              onSelectedChanged: (val) {
+                selectedValue = val;
+              },
+            ),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
+        );
+        await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Müll runterbringen'));
-      await tester.pumpAndSettle();
+        await tester.tap(find.text('Müll runterbringen'));
+        await tester.pumpAndSettle();
 
-      // Selection was not toggled
-      expect(selectedValue, isNull);
-      // SnackBar explanation is shown
-      expect(find.text('Kann erst gelöscht werden, wenn alle Mitglieder abgehakt haben'), findsOneWidget);
-    });
+        // Selection was not toggled
+        expect(selectedValue, isNull);
+        // SnackBar explanation is shown
+        expect(
+          find.text(
+            'Kann erst gelöscht werden, wenn alle Mitglieder abgehakt haben',
+          ),
+          findsOneWidget,
+        );
+      },
+    );
   });
 }

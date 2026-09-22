@@ -15,13 +15,11 @@ import '../providers/reminder_provider.dart';
 class CreateReminderSheet extends ConsumerStatefulWidget {
   final Reminder? reminderToEdit;
 
-  const CreateReminderSheet({
-    super.key,
-    this.reminderToEdit,
-  });
+  const CreateReminderSheet({super.key, this.reminderToEdit});
 
   @override
-  ConsumerState<CreateReminderSheet> createState() => _CreateReminderSheetState();
+  ConsumerState<CreateReminderSheet> createState() =>
+      _CreateReminderSheetState();
 }
 
 class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
@@ -172,32 +170,42 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
       );
 
       final edit = widget.reminderToEdit;
-      final assignedId = _selectedScope == ReminderCompletionScope.assigned ? _selectedAssignedTo : null;
+      final assignedId = _selectedScope == ReminderCompletionScope.assigned
+          ? _selectedAssignedTo
+          : null;
 
       if (edit != null) {
-        await ref.read(reminderRepositoryProvider).updateReminder(
-          reminderId: edit.id,
-          title: title,
-          notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
-          dueAt: effectiveDueAt,
-          rrule: rrule,
-          completionScope: _selectedScope,
-          assignedTo: assignedId,
-        );
+        await ref
+            .read(reminderRepositoryProvider)
+            .updateReminder(
+              reminderId: edit.id,
+              title: title,
+              notes: _notesController.text.trim().isEmpty
+                  ? null
+                  : _notesController.text.trim(),
+              dueAt: effectiveDueAt,
+              rrule: rrule,
+              completionScope: _selectedScope,
+              assignedTo: assignedId,
+            );
         await ref.read(remindersProvider.notifier).refresh();
       } else {
         final activeHivemind = ref.read(activeHivemindProvider);
         if (activeHivemind == null) return;
 
-        await ref.read(reminderRepositoryProvider).createReminder(
-          hivemindId: activeHivemind.id,
-          title: title,
-          notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
-          dueAt: effectiveDueAt,
-          rrule: rrule,
-          completionScope: _selectedScope,
-          assignedTo: assignedId,
-        );
+        await ref
+            .read(reminderRepositoryProvider)
+            .createReminder(
+              hivemindId: activeHivemind.id,
+              title: title,
+              notes: _notesController.text.trim().isEmpty
+                  ? null
+                  : _notesController.text.trim(),
+              dueAt: effectiveDueAt,
+              rrule: rrule,
+              completionScope: _selectedScope,
+              assignedTo: assignedId,
+            );
         await ref.read(remindersProvider.notifier).refresh();
       }
 
@@ -250,7 +258,9 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
               shape: BoxShape.circle,
               color: isSelected
                   ? AppColors.primary
-                  : (isDark ? AppColors.darkSurfaceSubtle : AppColors.lightSurfaceSubtle),
+                  : (isDark
+                        ? AppColors.darkSurfaceSubtle
+                        : AppColors.lightSurfaceSubtle),
               border: Border.all(
                 color: isSelected
                     ? AppColors.primary
@@ -265,7 +275,9 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                 color: isSelected
                     ? Colors.black
-                    : (isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary),
+                    : (isDark
+                          ? AppColors.darkTextSecondary
+                          : AppColors.lightTextSecondary),
               ),
             ),
           ),
@@ -277,25 +289,41 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
   String _getDayLabel(int day, bool isGerman) {
     if (isGerman) {
       switch (day) {
-        case DateTime.monday: return 'Mo';
-        case DateTime.tuesday: return 'Di';
-        case DateTime.wednesday: return 'Mi';
-        case DateTime.thursday: return 'Do';
-        case DateTime.friday: return 'Fr';
-        case DateTime.saturday: return 'Sa';
-        case DateTime.sunday: return 'So';
-        default: return '';
+        case DateTime.monday:
+          return 'Mo';
+        case DateTime.tuesday:
+          return 'Di';
+        case DateTime.wednesday:
+          return 'Mi';
+        case DateTime.thursday:
+          return 'Do';
+        case DateTime.friday:
+          return 'Fr';
+        case DateTime.saturday:
+          return 'Sa';
+        case DateTime.sunday:
+          return 'So';
+        default:
+          return '';
       }
     } else {
       switch (day) {
-        case DateTime.monday: return 'M';
-        case DateTime.tuesday: return 'Tu';
-        case DateTime.wednesday: return 'W';
-        case DateTime.thursday: return 'Th';
-        case DateTime.friday: return 'F';
-        case DateTime.saturday: return 'Sa';
-        case DateTime.sunday: return 'Su';
-        default: return '';
+        case DateTime.monday:
+          return 'M';
+        case DateTime.tuesday:
+          return 'Tu';
+        case DateTime.wednesday:
+          return 'W';
+        case DateTime.thursday:
+          return 'Th';
+        case DateTime.friday:
+          return 'F';
+        case DateTime.saturday:
+          return 'Sa';
+        case DateTime.sunday:
+          return 'Su';
+        default:
+          return '';
       }
     }
   }
@@ -303,25 +331,41 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
   String _getFullDayName(int day, bool isGerman) {
     if (isGerman) {
       switch (day) {
-        case DateTime.monday: return 'Montag';
-        case DateTime.tuesday: return 'Dienstag';
-        case DateTime.wednesday: return 'Mittwoch';
-        case DateTime.thursday: return 'Donnerstag';
-        case DateTime.friday: return 'Freitag';
-        case DateTime.saturday: return 'Samstag';
-        case DateTime.sunday: return 'Sonntag';
-        default: return '';
+        case DateTime.monday:
+          return 'Montag';
+        case DateTime.tuesday:
+          return 'Dienstag';
+        case DateTime.wednesday:
+          return 'Mittwoch';
+        case DateTime.thursday:
+          return 'Donnerstag';
+        case DateTime.friday:
+          return 'Freitag';
+        case DateTime.saturday:
+          return 'Samstag';
+        case DateTime.sunday:
+          return 'Sonntag';
+        default:
+          return '';
       }
     } else {
       switch (day) {
-        case DateTime.monday: return 'Monday';
-        case DateTime.tuesday: return 'Tuesday';
-        case DateTime.wednesday: return 'Wednesday';
-        case DateTime.thursday: return 'Thursday';
-        case DateTime.friday: return 'Friday';
-        case DateTime.saturday: return 'Saturday';
-        case DateTime.sunday: return 'Sunday';
-        default: return '';
+        case DateTime.monday:
+          return 'Monday';
+        case DateTime.tuesday:
+          return 'Tuesday';
+        case DateTime.wednesday:
+          return 'Wednesday';
+        case DateTime.thursday:
+          return 'Thursday';
+        case DateTime.friday:
+          return 'Friday';
+        case DateTime.saturday:
+          return 'Saturday';
+        case DateTime.sunday:
+          return 'Sunday';
+        default:
+          return '';
       }
     }
   }
@@ -336,7 +380,8 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
     final timeFormat = DateFormat.jm(locale);
     final isEdit = widget.reminderToEdit != null;
 
-    final showWeekdayPicker = _selectedPreset == RecurrencePreset.customDays ||
+    final showWeekdayPicker =
+        _selectedPreset == RecurrencePreset.customDays ||
         _selectedPreset == RecurrencePreset.weekly ||
         _selectedPreset == RecurrencePreset.weekdays;
 
@@ -358,7 +403,9 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
                 letterSpacing: -0.5,
-                color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                color: isDark
+                    ? AppColors.darkTextPrimary
+                    : AppColors.lightTextPrimary,
               ),
             ),
             const SizedBox(height: 18),
@@ -386,7 +433,9 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
                 letterSpacing: 1.2,
-                color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+                color: isDark
+                    ? AppColors.darkTextMuted
+                    : AppColors.lightTextMuted,
               ),
             ),
             const SizedBox(height: 10),
@@ -399,9 +448,13 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
                     icon: const Icon(Icons.calendar_today_rounded, size: 18),
                     label: Text(dateFormat.format(_selectedDate)),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                      foregroundColor: isDark
+                          ? AppColors.darkTextPrimary
+                          : AppColors.lightTextPrimary,
                       side: BorderSide(
-                        color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                        color: isDark
+                            ? AppColors.darkBorder
+                            : AppColors.lightBorder,
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
@@ -417,13 +470,23 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
                     icon: const Icon(Icons.access_time_rounded, size: 18),
                     label: Text(
                       timeFormat.format(
-                        DateTime(2026, 1, 1, _selectedTime.hour, _selectedTime.minute),
+                        DateTime(
+                          2026,
+                          1,
+                          1,
+                          _selectedTime.hour,
+                          _selectedTime.minute,
+                        ),
                       ),
                     ),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                      foregroundColor: isDark
+                          ? AppColors.darkTextPrimary
+                          : AppColors.lightTextPrimary,
                       side: BorderSide(
-                        color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                        color: isDark
+                            ? AppColors.darkBorder
+                            : AppColors.lightBorder,
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
@@ -443,7 +506,9 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
                 letterSpacing: 1.2,
-                color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+                color: isDark
+                    ? AppColors.darkTextMuted
+                    : AppColors.lightTextMuted,
               ),
             ),
             const SizedBox(height: 10),
@@ -458,12 +523,18 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
                     size: 16,
                     color: _selectedScope == ReminderCompletionScope.anyone
                         ? AppColors.primary
-                        : (isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted),
+                        : (isDark
+                              ? AppColors.darkTextMuted
+                              : AppColors.lightTextMuted),
                   ),
                   label: Text(l10n.scopeAnyone),
                   selected: _selectedScope == ReminderCompletionScope.anyone,
-                  selectedColor: AppColors.primary.withValues(alpha: isDark ? 0.25 : 0.15),
-                  backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+                  selectedColor: AppColors.primary.withValues(
+                    alpha: isDark ? 0.25 : 0.15,
+                  ),
+                  backgroundColor: isDark
+                      ? AppColors.darkSurface
+                      : AppColors.lightSurface,
                   labelStyle: TextStyle(
                     fontSize: 13,
                     fontWeight: _selectedScope == ReminderCompletionScope.anyone
@@ -471,13 +542,19 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
                         : FontWeight.w500,
                     color: _selectedScope == ReminderCompletionScope.anyone
                         ? AppColors.primary
-                        : (isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary),
+                        : (isDark
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary),
                   ),
                   side: BorderSide(
                     color: _selectedScope == ReminderCompletionScope.anyone
                         ? AppColors.primary
-                        : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
-                    width: _selectedScope == ReminderCompletionScope.anyone ? 1.5 : 1,
+                        : (isDark
+                              ? AppColors.darkBorder
+                              : AppColors.lightBorder),
+                    width: _selectedScope == ReminderCompletionScope.anyone
+                        ? 1.5
+                        : 1,
                   ),
                   onSelected: (selected) {
                     if (selected) {
@@ -494,36 +571,51 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
                     size: 16,
                     color: _selectedScope == ReminderCompletionScope.assigned
                         ? AppColors.primary
-                        : (isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted),
+                        : (isDark
+                              ? AppColors.darkTextMuted
+                              : AppColors.lightTextMuted),
                   ),
                   label: Text(l10n.scopeAssigned),
                   selected: _selectedScope == ReminderCompletionScope.assigned,
-                  selectedColor: AppColors.primary.withValues(alpha: isDark ? 0.25 : 0.15),
-                  backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+                  selectedColor: AppColors.primary.withValues(
+                    alpha: isDark ? 0.25 : 0.15,
+                  ),
+                  backgroundColor: isDark
+                      ? AppColors.darkSurface
+                      : AppColors.lightSurface,
                   labelStyle: TextStyle(
                     fontSize: 13,
-                    fontWeight: _selectedScope == ReminderCompletionScope.assigned
+                    fontWeight:
+                        _selectedScope == ReminderCompletionScope.assigned
                         ? FontWeight.w600
                         : FontWeight.w500,
                     color: _selectedScope == ReminderCompletionScope.assigned
                         ? AppColors.primary
-                        : (isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary),
+                        : (isDark
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary),
                   ),
                   side: BorderSide(
                     color: _selectedScope == ReminderCompletionScope.assigned
                         ? AppColors.primary
-                        : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
-                    width: _selectedScope == ReminderCompletionScope.assigned ? 1.5 : 1,
+                        : (isDark
+                              ? AppColors.darkBorder
+                              : AppColors.lightBorder),
+                    width: _selectedScope == ReminderCompletionScope.assigned
+                        ? 1.5
+                        : 1,
                   ),
                   onSelected: (selected) {
                     if (selected) {
                       HapticFeedback.selectionClick();
                       setState(() {
                         _selectedScope = ReminderCompletionScope.assigned;
-                        final members = ref.read(activeHivemindMembersProvider).value ?? [];
+                        final members =
+                            ref.read(activeHivemindMembersProvider).value ?? [];
                         final currentUid = FirebaseService.currentUserId;
                         if (_selectedAssignedTo == null && members.isNotEmpty) {
-                          _selectedAssignedTo = currentUid ?? members.first.userId;
+                          _selectedAssignedTo =
+                              currentUid ?? members.first.userId;
                         }
                       });
                     }
@@ -535,12 +627,18 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
                     size: 16,
                     color: _selectedScope == ReminderCompletionScope.all
                         ? AppColors.primary
-                        : (isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted),
+                        : (isDark
+                              ? AppColors.darkTextMuted
+                              : AppColors.lightTextMuted),
                   ),
                   label: Text(l10n.scopeAll),
                   selected: _selectedScope == ReminderCompletionScope.all,
-                  selectedColor: AppColors.primary.withValues(alpha: isDark ? 0.25 : 0.15),
-                  backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+                  selectedColor: AppColors.primary.withValues(
+                    alpha: isDark ? 0.25 : 0.15,
+                  ),
+                  backgroundColor: isDark
+                      ? AppColors.darkSurface
+                      : AppColors.lightSurface,
                   labelStyle: TextStyle(
                     fontSize: 13,
                     fontWeight: _selectedScope == ReminderCompletionScope.all
@@ -548,13 +646,19 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
                         : FontWeight.w500,
                     color: _selectedScope == ReminderCompletionScope.all
                         ? AppColors.primary
-                        : (isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary),
+                        : (isDark
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary),
                   ),
                   side: BorderSide(
                     color: _selectedScope == ReminderCompletionScope.all
                         ? AppColors.primary
-                        : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
-                    width: _selectedScope == ReminderCompletionScope.all ? 1.5 : 1,
+                        : (isDark
+                              ? AppColors.darkBorder
+                              : AppColors.lightBorder),
+                    width: _selectedScope == ReminderCompletionScope.all
+                        ? 1.5
+                        : 1,
                   ),
                   onSelected: (selected) {
                     if (selected) {
@@ -572,14 +676,17 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
               const SizedBox(height: 10),
               Builder(
                 builder: (context) {
-                  final members = ref.watch(activeHivemindMembersProvider).value ?? [];
+                  final members =
+                      ref.watch(activeHivemindMembersProvider).value ?? [];
                   final currentUid = FirebaseService.currentUserId;
                   if (members.isEmpty) {
                     return Text(
                       l10n.selectAssignee,
                       style: TextStyle(
                         fontSize: 12,
-                        color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+                        color: isDark
+                            ? AppColors.darkTextMuted
+                            : AppColors.lightTextMuted,
                       ),
                     );
                   }
@@ -589,7 +696,9 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
                     children: members.map((member) {
                       final isSelected = _selectedAssignedTo == member.userId;
                       final isYou = member.userId == currentUid;
-                      final labelText = isYou ? '${member.displayName} (${l10n.assignedToYou})' : member.displayName;
+                      final labelText = isYou
+                          ? '${member.displayName} (${l10n.assignedToYou})'
+                          : member.displayName;
 
                       return FilterChip(
                         selected: isSelected,
@@ -598,30 +707,46 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
                           radius: 10,
                           backgroundColor: isSelected
                               ? AppColors.primary
-                              : (isDark ? AppColors.darkSurfaceSubtle : AppColors.lightSurfaceSubtle),
+                              : (isDark
+                                    ? AppColors.darkSurfaceSubtle
+                                    : AppColors.lightSurfaceSubtle),
                           child: Text(
-                            member.displayName.isNotEmpty ? member.displayName[0].toUpperCase() : '?',
+                            member.displayName.isNotEmpty
+                                ? member.displayName[0].toUpperCase()
+                                : '?',
                             style: TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.w700,
-                              color: isSelected ? Colors.black : (isDark ? Colors.white : Colors.black87),
+                              color: isSelected
+                                  ? Colors.black
+                                  : (isDark ? Colors.white : Colors.black87),
                             ),
                           ),
                         ),
                         label: Text(labelText),
                         labelStyle: TextStyle(
                           fontSize: 12,
-                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                          fontWeight: isSelected
+                              ? FontWeight.w600
+                              : FontWeight.w500,
                           color: isSelected
                               ? AppColors.primary
-                              : (isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary),
+                              : (isDark
+                                    ? AppColors.darkTextSecondary
+                                    : AppColors.lightTextSecondary),
                         ),
-                        backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-                        selectedColor: AppColors.primary.withValues(alpha: isDark ? 0.25 : 0.15),
+                        backgroundColor: isDark
+                            ? AppColors.darkSurface
+                            : AppColors.lightSurface,
+                        selectedColor: AppColors.primary.withValues(
+                          alpha: isDark ? 0.25 : 0.15,
+                        ),
                         side: BorderSide(
                           color: isSelected
                               ? AppColors.primary
-                              : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                              : (isDark
+                                    ? AppColors.darkBorder
+                                    : AppColors.lightBorder),
                           width: isSelected ? 1.5 : 1,
                         ),
                         onSelected: (_) {
@@ -645,7 +770,9 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
                 letterSpacing: 1.2,
-                color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+                color: isDark
+                    ? AppColors.darkTextMuted
+                    : AppColors.lightTextMuted,
               ),
             ),
             const SizedBox(height: 10),
@@ -656,21 +783,31 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
               children: RecurrencePreset.values.map((preset) {
                 final isSelected = _selectedPreset == preset;
                 return ChoiceChip(
-                  label: Text(RecurrenceUtil.getReadablePresetTitle(preset, l10n)),
+                  label: Text(
+                    RecurrenceUtil.getReadablePresetTitle(preset, l10n),
+                  ),
                   selected: isSelected,
-                  selectedColor: AppColors.primary.withValues(alpha: isDark ? 0.25 : 0.15),
-                  backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+                  selectedColor: AppColors.primary.withValues(
+                    alpha: isDark ? 0.25 : 0.15,
+                  ),
+                  backgroundColor: isDark
+                      ? AppColors.darkSurface
+                      : AppColors.lightSurface,
                   labelStyle: TextStyle(
                     fontSize: 13,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                     color: isSelected
                         ? AppColors.primary
-                        : (isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary),
+                        : (isDark
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary),
                   ),
                   side: BorderSide(
                     color: isSelected
                         ? AppColors.primary
-                        : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                        : (isDark
+                              ? AppColors.darkBorder
+                              : AppColors.lightBorder),
                     width: isSelected ? 1.5 : 1,
                   ),
                   onSelected: (selected) {
@@ -683,7 +820,8 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
                           _selectedWeekdays = {1, 2, 3, 4, 5, 6, 7};
                         } else if (preset == RecurrencePreset.weekly) {
                           _selectedWeekdays = {_selectedDate.weekday};
-                        } else if (preset == RecurrencePreset.customDays && _selectedWeekdays.isEmpty) {
+                        } else if (preset == RecurrencePreset.customDays &&
+                            _selectedWeekdays.isEmpty) {
                           _selectedWeekdays = {_selectedDate.weekday};
                         }
                       });
@@ -705,7 +843,9 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 1.2,
-                      color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+                      color: isDark
+                          ? AppColors.darkTextMuted
+                          : AppColors.lightTextMuted,
                     ),
                   ),
                   // Quick selection pills
@@ -714,7 +854,8 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
                     children: [
                       _buildQuickPill(
                         label: l10n.presetWeekdaysOnly,
-                        isSelected: _selectedWeekdays.length == 5 &&
+                        isSelected:
+                            _selectedWeekdays.length == 5 &&
                             _selectedWeekdays.contains(1) &&
                             _selectedWeekdays.contains(5),
                         isDark: isDark,
@@ -723,7 +864,8 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
                       const SizedBox(width: 6),
                       _buildQuickPill(
                         label: l10n.presetWeekendsOnly,
-                        isSelected: _selectedWeekdays.length == 2 &&
+                        isSelected:
+                            _selectedWeekdays.length == 2 &&
                             _selectedWeekdays.contains(6) &&
                             _selectedWeekdays.contains(7),
                         isDark: isDark,
@@ -734,7 +876,8 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
                         label: l10n.presetAllDays,
                         isSelected: _selectedWeekdays.length == 7,
                         isDark: isDark,
-                        onTap: () => _selectWeekdayPreset({1, 2, 3, 4, 5, 6, 7}),
+                        onTap: () =>
+                            _selectWeekdayPreset({1, 2, 3, 4, 5, 6, 7}),
                       ),
                     ],
                   ),
@@ -786,7 +929,9 @@ class _CreateReminderSheetState extends ConsumerState<CreateReminderSheet> {
         decoration: BoxDecoration(
           color: isSelected
               ? AppColors.primary.withValues(alpha: isDark ? 0.25 : 0.15)
-              : (isDark ? AppColors.darkSurfaceSubtle : AppColors.lightSurfaceSubtle),
+              : (isDark
+                    ? AppColors.darkSurfaceSubtle
+                    : AppColors.lightSurfaceSubtle),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected

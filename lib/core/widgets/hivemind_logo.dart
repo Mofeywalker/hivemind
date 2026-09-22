@@ -27,13 +27,10 @@ class HivemindLogo extends StatelessWidget {
     this.isDark,
   });
 
-  const HivemindLogo.icon({
-    super.key,
-    double size = 48,
-    this.isDark,
-  })  : variant = HivemindLogoVariant.iconOnly,
-        width = size,
-        height = size;
+  const HivemindLogo.icon({super.key, double size = 48, this.isDark})
+    : variant = HivemindLogoVariant.iconOnly,
+      width = size,
+      height = size;
 
   const HivemindLogo.horizontal({
     super.key,
@@ -51,7 +48,8 @@ class HivemindLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveDark = isDark ?? (Theme.of(context).brightness == Brightness.dark);
+    final effectiveDark =
+        isDark ?? (Theme.of(context).brightness == Brightness.dark);
 
     final String assetPath;
     switch (variant) {

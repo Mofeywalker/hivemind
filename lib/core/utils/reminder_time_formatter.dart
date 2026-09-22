@@ -10,8 +10,8 @@ class ReminderTimeFormatter {
     String? rrule,
     Locale? locale,
   }) {
-    final effectiveLocale = locale ??
-        WidgetsBinding.instance.platformDispatcher.locale;
+    final effectiveLocale =
+        locale ?? WidgetsBinding.instance.platformDispatcher.locale;
     final localeStr = effectiveLocale.languageCode;
     final isGerman = localeStr == 'de';
 
@@ -31,7 +31,9 @@ class ReminderTimeFormatter {
     } else if (dayDiff == 1) {
       datePart = isGerman ? 'Morgen, $timeWithUnit' : 'Tomorrow, $timeWithUnit';
     } else if (dayDiff == -1) {
-      datePart = isGerman ? 'Gestern, $timeWithUnit' : 'Yesterday, $timeWithUnit';
+      datePart = isGerman
+          ? 'Gestern, $timeWithUnit'
+          : 'Yesterday, $timeWithUnit';
     } else {
       final dateFormat = DateFormat.MMMd(localeStr);
       final dateFormatted = dateFormat.format(localDueAt);
@@ -60,7 +62,10 @@ class ReminderTimeFormatter {
       case RecurrencePreset.weekly:
         return isGerman ? 'Wöchentlich' : 'Weekly';
       case RecurrencePreset.customDays:
-        return RecurrenceUtil.getReadableRecurrenceDescription(rrule, isGerman: isGerman);
+        return RecurrenceUtil.getReadableRecurrenceDescription(
+          rrule,
+          isGerman: isGerman,
+        );
       case RecurrencePreset.biweekly:
         return isGerman ? 'Alle 2 Wochen' : 'Bi-weekly';
       case RecurrencePreset.monthly:

@@ -107,7 +107,9 @@ class RecurrenceUtil {
     }
     final upper = rruleString.toUpperCase();
     if (upper.contains('INTERVAL=2')) return RecurrencePreset.biweekly;
-    if (upper.contains('BYDAY=MO,TU,WE,TH,FR')) return RecurrencePreset.weekdays;
+    if (upper.contains('BYDAY=MO,TU,WE,TH,FR')) {
+      return RecurrencePreset.weekdays;
+    }
     if (upper.contains('FREQ=DAILY')) return RecurrencePreset.daily;
     if (upper.contains('FREQ=MONTHLY')) return RecurrencePreset.monthly;
     if (upper.contains('FREQ=WEEKLY')) {
@@ -155,14 +157,13 @@ class RecurrenceUtil {
           : rruleString;
 
       final recurrenceRule = RecurrenceRule.fromString('RRULE:$rruleClean');
-      final instances = recurrenceRule.getInstances(
-        start: baseDueAt.toUtc(),
-      );
+      final instances = recurrenceRule.getInstances(start: baseDueAt.toUtc());
 
       for (final dt in instances) {
         final localDt = dt.toLocal();
         if (localDt.isAfter(effectiveAfter)) {
-          if (validWeekdays.isEmpty || validWeekdays.contains(localDt.weekday)) {
+          if (validWeekdays.isEmpty ||
+              validWeekdays.contains(localDt.weekday)) {
             return localDt;
           }
         }
@@ -173,7 +174,13 @@ class RecurrenceUtil {
       final ref = after ?? DateTime.now();
 
       if (validWeekdays.isNotEmpty) {
-        var next = DateTime(ref.year, ref.month, ref.day, baseDueAt.hour, baseDueAt.minute);
+        var next = DateTime(
+          ref.year,
+          ref.month,
+          ref.day,
+          baseDueAt.hour,
+          baseDueAt.minute,
+        );
         if (!next.isAfter(ref)) {
           next = next.add(const Duration(days: 1));
         }
@@ -193,10 +200,17 @@ class RecurrenceUtil {
         case RecurrencePreset.biweekly:
           return ref.add(const Duration(days: 14));
         case RecurrencePreset.monthly:
-          return DateTime(ref.year, ref.month + 1, ref.day, baseDueAt.hour, baseDueAt.minute);
+          return DateTime(
+            ref.year,
+            ref.month + 1,
+            ref.day,
+            baseDueAt.hour,
+            baseDueAt.minute,
+          );
         case RecurrencePreset.weekdays:
           var next = ref.add(const Duration(days: 1));
-          while (next.weekday == DateTime.saturday || next.weekday == DateTime.sunday) {
+          while (next.weekday == DateTime.saturday ||
+              next.weekday == DateTime.sunday) {
             next = next.add(const Duration(days: 1));
           }
           return next;
@@ -208,7 +222,10 @@ class RecurrenceUtil {
     return null;
   }
 
-  static String getReadablePresetTitle(RecurrencePreset preset, [AppLocalizations? l10n]) {
+  static String getReadablePresetTitle(
+    RecurrencePreset preset, [
+    AppLocalizations? l10n,
+  ]) {
     if (l10n != null) {
       switch (preset) {
         case RecurrencePreset.none:
@@ -251,7 +268,8 @@ class RecurrenceUtil {
     bool isGerman = true,
   }) {
     if (rruleString == null || rruleString.trim().isEmpty) {
-      return l10n?.recurrenceDoesNotRepeat ?? (isGerman ? 'Einmalig' : 'Does not repeat');
+      return l10n?.recurrenceDoesNotRepeat ??
+          (isGerman ? 'Einmalig' : 'Does not repeat');
     }
 
     final preset = presetFromRRule(rruleString);
@@ -287,7 +305,9 @@ class RecurrenceUtil {
     }
 
     // Weekend check
-    if (sortedDays.length == 2 && sortedDays.contains(6) && sortedDays.contains(7)) {
+    if (sortedDays.length == 2 &&
+        sortedDays.contains(6) &&
+        sortedDays.contains(7)) {
       return isGerman ? 'Sa, So' : 'Sat, Sun';
     }
 
@@ -298,32 +318,50 @@ class RecurrenceUtil {
       return '$prefix $dayName';
     }
 
-    final formattedDays = sortedDays.map((d) => _weekdayShort(d, isGerman)).join(', ');
+    final formattedDays = sortedDays
+        .map((d) => _weekdayShort(d, isGerman))
+        .join(', ');
     return '$prefix $formattedDays';
   }
 
   static String _weekdayShort(int weekday, bool isGerman) {
     if (isGerman) {
       switch (weekday) {
-        case DateTime.monday: return 'Mo';
-        case DateTime.tuesday: return 'Di';
-        case DateTime.wednesday: return 'Mi';
-        case DateTime.thursday: return 'Do';
-        case DateTime.friday: return 'Fr';
-        case DateTime.saturday: return 'Sa';
-        case DateTime.sunday: return 'So';
-        default: return 'Mo';
+        case DateTime.monday:
+          return 'Mo';
+        case DateTime.tuesday:
+          return 'Di';
+        case DateTime.wednesday:
+          return 'Mi';
+        case DateTime.thursday:
+          return 'Do';
+        case DateTime.friday:
+          return 'Fr';
+        case DateTime.saturday:
+          return 'Sa';
+        case DateTime.sunday:
+          return 'So';
+        default:
+          return 'Mo';
       }
     } else {
       switch (weekday) {
-        case DateTime.monday: return 'Mon';
-        case DateTime.tuesday: return 'Tue';
-        case DateTime.wednesday: return 'Wed';
-        case DateTime.thursday: return 'Thu';
-        case DateTime.friday: return 'Fri';
-        case DateTime.saturday: return 'Sat';
-        case DateTime.sunday: return 'Sun';
-        default: return 'Mon';
+        case DateTime.monday:
+          return 'Mon';
+        case DateTime.tuesday:
+          return 'Tue';
+        case DateTime.wednesday:
+          return 'Wed';
+        case DateTime.thursday:
+          return 'Thu';
+        case DateTime.friday:
+          return 'Fri';
+        case DateTime.saturday:
+          return 'Sat';
+        case DateTime.sunday:
+          return 'Sun';
+        default:
+          return 'Mon';
       }
     }
   }
@@ -331,25 +369,41 @@ class RecurrenceUtil {
   static String _weekdayFull(int weekday, bool isGerman) {
     if (isGerman) {
       switch (weekday) {
-        case DateTime.monday: return 'Montag';
-        case DateTime.tuesday: return 'Dienstag';
-        case DateTime.wednesday: return 'Mittwoch';
-        case DateTime.thursday: return 'Donnerstag';
-        case DateTime.friday: return 'Freitag';
-        case DateTime.saturday: return 'Samstag';
-        case DateTime.sunday: return 'Sonntag';
-        default: return 'Montag';
+        case DateTime.monday:
+          return 'Montag';
+        case DateTime.tuesday:
+          return 'Dienstag';
+        case DateTime.wednesday:
+          return 'Mittwoch';
+        case DateTime.thursday:
+          return 'Donnerstag';
+        case DateTime.friday:
+          return 'Freitag';
+        case DateTime.saturday:
+          return 'Samstag';
+        case DateTime.sunday:
+          return 'Sonntag';
+        default:
+          return 'Montag';
       }
     } else {
       switch (weekday) {
-        case DateTime.monday: return 'Monday';
-        case DateTime.tuesday: return 'Tuesday';
-        case DateTime.wednesday: return 'Wednesday';
-        case DateTime.thursday: return 'Thursday';
-        case DateTime.friday: return 'Friday';
-        case DateTime.saturday: return 'Saturday';
-        case DateTime.sunday: return 'Sunday';
-        default: return 'Monday';
+        case DateTime.monday:
+          return 'Monday';
+        case DateTime.tuesday:
+          return 'Tuesday';
+        case DateTime.wednesday:
+          return 'Wednesday';
+        case DateTime.thursday:
+          return 'Thursday';
+        case DateTime.friday:
+          return 'Friday';
+        case DateTime.saturday:
+          return 'Saturday';
+        case DateTime.sunday:
+          return 'Sunday';
+        default:
+          return 'Monday';
       }
     }
   }

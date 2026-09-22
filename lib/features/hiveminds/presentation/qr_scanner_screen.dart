@@ -46,7 +46,9 @@ class _QrScannerScreenState extends ConsumerState<QrScannerScreen> {
         });
 
         try {
-          final joined = await ref.read(hivemindRepositoryProvider).joinByInviteCode(inviteCode);
+          final joined = await ref
+              .read(hivemindRepositoryProvider)
+              .joinByInviteCode(inviteCode);
           await ref.read(activeHivemindProvider.notifier).refresh();
           ref.read(activeHivemindProvider.notifier).setActive(joined);
 
@@ -59,7 +61,9 @@ class _QrScannerScreenState extends ConsumerState<QrScannerScreen> {
         } catch (e) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(context.l10n.failedToJoinHivemind(e.toString()))),
+              SnackBar(
+                content: Text(context.l10n.failedToJoinHivemind(e.toString())),
+              ),
             );
             setState(() {
               _isProcessing = false;
@@ -82,9 +86,7 @@ class _QrScannerScreenState extends ConsumerState<QrScannerScreen> {
           IconButton(
             icon: const Icon(Icons.flash_on_outlined, size: 24),
             tooltip: 'Toggle flashlight',
-            style: IconButton.styleFrom(
-              minimumSize: const Size(48, 48),
-            ),
+            style: IconButton.styleFrom(minimumSize: const Size(48, 48)),
             onPressed: () => _controller.toggleTorch(),
           ),
           const SizedBox(width: 8),
@@ -92,10 +94,7 @@ class _QrScannerScreenState extends ConsumerState<QrScannerScreen> {
       ),
       body: Stack(
         children: [
-          MobileScanner(
-            controller: _controller,
-            onDetect: _onDetect,
-          ),
+          MobileScanner(controller: _controller, onDetect: _onDetect),
           Center(
             child: Container(
               width: 240,

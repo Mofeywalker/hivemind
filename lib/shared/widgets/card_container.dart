@@ -45,10 +45,7 @@ class CardContainer extends StatelessWidget {
           onTap: onTap,
           onLongPress: onLongPress,
           borderRadius: BorderRadius.circular(borderRadius),
-          child: Padding(
-            padding: padding,
-            child: child,
-          ),
+          child: Padding(padding: padding, child: child),
         ),
       ),
     );

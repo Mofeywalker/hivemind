@@ -51,10 +51,14 @@ class HivemindSwitcherSheet extends ConsumerWidget {
               Navigator.of(ctx).pop();
 
               try {
-                final created = await ref.read(hivemindRepositoryProvider).createHivemind(
-                  name: name,
-                  description: descController.text.trim().isEmpty ? null : descController.text.trim(),
-                );
+                final created = await ref
+                    .read(hivemindRepositoryProvider)
+                    .createHivemind(
+                      name: name,
+                      description: descController.text.trim().isEmpty
+                          ? null
+                          : descController.text.trim(),
+                    );
                 await ref.read(activeHivemindProvider.notifier).refresh();
                 ref.read(activeHivemindProvider.notifier).setActive(created);
                 if (context.mounted) {
@@ -63,7 +67,9 @@ class HivemindSwitcherSheet extends ConsumerWidget {
               } catch (e) {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.failedToCreateHivemind(e.toString()))),
+                    SnackBar(
+                      content: Text(l10n.failedToCreateHivemind(e.toString())),
+                    ),
                   );
                 }
               }
@@ -118,7 +124,9 @@ class HivemindSwitcherSheet extends ConsumerWidget {
               Navigator.of(ctx).pop();
 
               try {
-                final joined = await ref.read(hivemindRepositoryProvider).joinByInviteCode(code);
+                final joined = await ref
+                    .read(hivemindRepositoryProvider)
+                    .joinByInviteCode(code);
                 await ref.read(activeHivemindProvider.notifier).refresh();
                 ref.read(activeHivemindProvider.notifier).setActive(joined);
                 if (context.mounted) {
@@ -127,7 +135,9 @@ class HivemindSwitcherSheet extends ConsumerWidget {
               } catch (e) {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.failedToJoinHivemind(e.toString()))),
+                    SnackBar(
+                      content: Text(l10n.failedToJoinHivemind(e.toString())),
+                    ),
                   );
                 }
               }
@@ -160,22 +170,27 @@ class HivemindSwitcherSheet extends ConsumerWidget {
                   fontSize: 22,
                   fontWeight: FontWeight.w700,
                   letterSpacing: -0.5,
-                  color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                  color: isDark
+                      ? AppColors.darkTextPrimary
+                      : AppColors.lightTextPrimary,
                 ),
               ),
               if (activeHivemind != null)
                 IconButton(
-                  icon: const Icon(Icons.person_add_outlined, size: 24, color: AppColors.primary),
-                  tooltip: l10n.inviteMembers,
-                  style: IconButton.styleFrom(
-                    minimumSize: const Size(48, 48),
+                  icon: const Icon(
+                    Icons.person_add_outlined,
+                    size: 24,
+                    color: AppColors.primary,
                   ),
+                  tooltip: l10n.inviteMembers,
+                  style: IconButton.styleFrom(minimumSize: const Size(48, 48)),
                   onPressed: () {
                     Navigator.of(context).pop();
                     showModalBottomSheet(
                       context: context,
                       isScrollControlled: true,
-                      builder: (_) => HivemindInviteSheet(hivemind: activeHivemind),
+                      builder: (_) =>
+                          HivemindInviteSheet(hivemind: activeHivemind),
                     );
                   },
                 ),
@@ -208,7 +223,9 @@ class HivemindSwitcherSheet extends ConsumerWidget {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 15,
-                        color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                        color: isDark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.lightTextSecondary,
                       ),
                     ),
                   ),
@@ -219,7 +236,8 @@ class HivemindSwitcherSheet extends ConsumerWidget {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: list.length,
-                separatorBuilder: (context, index) => const SizedBox(height: 10),
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 10),
                 itemBuilder: (context, index) {
                   final item = list[index];
                   final isSelected = activeHivemind?.id == item.id;
@@ -232,16 +250,25 @@ class HivemindSwitcherSheet extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(16),
                     child: Container(
                       constraints: const BoxConstraints(minHeight: 56),
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 14,
+                      ),
                       decoration: BoxDecoration(
                         color: isSelected
-                            ? AppColors.primary.withValues(alpha: isDark ? 0.2 : 0.1)
-                            : (isDark ? AppColors.darkSurfaceSubtle : AppColors.lightSurfaceSubtle),
+                            ? AppColors.primary.withValues(
+                                alpha: isDark ? 0.2 : 0.1,
+                              )
+                            : (isDark
+                                  ? AppColors.darkSurfaceSubtle
+                                  : AppColors.lightSurfaceSubtle),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
                           color: isSelected
                               ? AppColors.primary
-                              : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                              : (isDark
+                                    ? AppColors.darkBorder
+                                    : AppColors.lightBorder),
                           width: isSelected ? 1.8 : 1,
                         ),
                       ),
@@ -257,7 +284,10 @@ class HivemindSwitcherSheet extends ConsumerWidget {
                                   : Colors.transparent,
                               shape: BoxShape.circle,
                             ),
-                            child: Text(item.icon, style: const TextStyle(fontSize: 22)),
+                            child: Text(
+                              item.icon,
+                              style: const TextStyle(fontSize: 22),
+                            ),
                           ),
                           const SizedBox(width: 14),
                           Expanded(
@@ -270,10 +300,13 @@ class HivemindSwitcherSheet extends ConsumerWidget {
                                     fontWeight: FontWeight.w600,
                                     fontSize: 16.5,
                                     letterSpacing: -0.2,
-                                    color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                                    color: isDark
+                                        ? AppColors.darkTextPrimary
+                                        : AppColors.lightTextPrimary,
                                   ),
                                 ),
-                                if (item.description != null && item.description!.isNotEmpty) ...[
+                                if (item.description != null &&
+                                    item.description!.isNotEmpty) ...[
                                   const SizedBox(height: 3),
                                   Text(
                                     item.description!,
@@ -281,7 +314,9 @@ class HivemindSwitcherSheet extends ConsumerWidget {
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                       fontSize: 13.5,
-                                      color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                                      color: isDark
+                                          ? AppColors.darkTextSecondary
+                                          : AppColors.lightTextSecondary,
                                     ),
                                   ),
                                 ],
@@ -289,7 +324,11 @@ class HivemindSwitcherSheet extends ConsumerWidget {
                             ),
                           ),
                           if (isSelected)
-                            const Icon(Icons.check_circle_rounded, size: 22, color: AppColors.primary),
+                            const Icon(
+                              Icons.check_circle_rounded,
+                              size: 22,
+                              color: AppColors.primary,
+                            ),
                         ],
                       ),
                     ),

@@ -10,7 +10,8 @@ import '../../features/reminders/presentation/timeline_screen.dart';
 class AppRouter {
   AppRouter._();
 
-  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
 
   static GoRouter createRouter() {
     Stream<dynamic>? authStream;
@@ -23,7 +24,9 @@ class AppRouter {
     return GoRouter(
       navigatorKey: navigatorKey,
       initialLocation: '/',
-      refreshListenable: authStream != null ? GoRouterRefreshStream(authStream) : null,
+      refreshListenable: authStream != null
+          ? GoRouterRefreshStream(authStream)
+          : null,
       redirect: (BuildContext context, GoRouterState state) {
         User? user;
         try {
@@ -44,10 +47,7 @@ class AppRouter {
         return null;
       },
       routes: [
-        GoRoute(
-          path: '/',
-          builder: (context, state) => const TimelineScreen(),
-        ),
+        GoRoute(path: '/', builder: (context, state) => const TimelineScreen()),
         GoRoute(
           path: '/login',
           builder: (context, state) => const LoginScreen(),
@@ -80,4 +80,3 @@ class GoRouterRefreshStream extends ChangeNotifier {
     super.dispose();
   }
 }
-

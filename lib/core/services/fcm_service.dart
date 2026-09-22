@@ -22,7 +22,10 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     final notes = data['notes'] ?? message.notification?.body;
     final rawDueAt = data['due_at']?.toString();
 
-    if (reminderId != null && title != null && rawDueAt != null && rawDueAt.isNotEmpty) {
+    if (reminderId != null &&
+        title != null &&
+        rawDueAt != null &&
+        rawDueAt.isNotEmpty) {
       final dueAt = DateTime.tryParse(rawDueAt);
       if (dueAt != null && dueAt.isAfter(DateTime.now())) {
         await NotificationService.scheduleReminder(
@@ -147,7 +150,8 @@ class FcmService {
       final initialMessage = await messaging.getInitialMessage();
       if (initialMessage != null) {
         debugPrint('FCM initial message on app launch: ${initialMessage.data}');
-        final reminderId = initialMessage.data['reminder_id'] ?? initialMessage.data['id'];
+        final reminderId =
+            initialMessage.data['reminder_id'] ?? initialMessage.data['id'];
         if (reminderId != null && onReminderTap != null) {
           onReminderTap(reminderId.toString());
         }
@@ -193,4 +197,3 @@ class FcmService {
     }
   }
 }
-

@@ -17,9 +17,5 @@ void main() async {
     FcmService.initialize(),
   ]);
 
-  runApp(
-    const ProviderScope(
-      child: HivemindApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: HivemindApp()));
 }

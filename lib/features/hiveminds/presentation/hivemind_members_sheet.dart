@@ -75,7 +75,9 @@ class HivemindMembersSheet extends ConsumerWidget {
                   height: 40,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: isDark ? 0.18 : 0.12),
+                    color: AppColors.primary.withValues(
+                      alpha: isDark ? 0.18 : 0.12,
+                    ),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: AppColors.primary.withValues(alpha: 0.3),
@@ -98,7 +100,9 @@ class HivemindMembersSheet extends ConsumerWidget {
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
                           letterSpacing: -0.3,
-                          color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                          color: isDark
+                              ? AppColors.darkTextPrimary
+                              : AppColors.lightTextPrimary,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -109,21 +113,27 @@ class HivemindMembersSheet extends ConsumerWidget {
                           l10n.membersCount(members.length),
                           style: TextStyle(
                             fontSize: 13,
-                            color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                            color: isDark
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary,
                           ),
                         ),
                         loading: () => Text(
                           l10n.membersTitle,
                           style: TextStyle(
                             fontSize: 13,
-                            color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                            color: isDark
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary,
                           ),
                         ),
                         error: (err, stack) => Text(
                           l10n.membersTitle,
                           style: TextStyle(
                             fontSize: 13,
-                            color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                            color: isDark
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary,
                           ),
                         ),
                       ),
@@ -132,7 +142,9 @@ class HivemindMembersSheet extends ConsumerWidget {
                 ),
                 IconButton(
                   icon: const Icon(Icons.close_rounded, size: 22),
-                  color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                  color: isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary,
                   tooltip: l10n.cancel,
                   onPressed: () => Navigator.of(context).pop(),
                 ),
@@ -164,7 +176,9 @@ class HivemindMembersSheet extends ConsumerWidget {
                         l10n.noMembers,
                         style: TextStyle(
                           fontSize: 14,
-                          color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                          color: isDark
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary,
                         ),
                       ),
                     ),
@@ -172,15 +186,16 @@ class HivemindMembersSheet extends ConsumerWidget {
                 }
 
                 // Sort: current user first, then owners, then others
-                final sortedMembers = List<HivemindMember>.from(members)..sort((a, b) {
-                  if (a.userId == effectiveUserId) return -1;
-                  if (b.userId == effectiveUserId) return 1;
-                  final aOwner = a.role.toLowerCase() == 'owner';
-                  final bOwner = b.role.toLowerCase() == 'owner';
-                  if (aOwner && !bOwner) return -1;
-                  if (!aOwner && bOwner) return 1;
-                  return a.displayName.compareTo(b.displayName);
-                });
+                final sortedMembers = List<HivemindMember>.from(members)
+                  ..sort((a, b) {
+                    if (a.userId == effectiveUserId) return -1;
+                    if (b.userId == effectiveUserId) return 1;
+                    final aOwner = a.role.toLowerCase() == 'owner';
+                    final bOwner = b.role.toLowerCase() == 'owner';
+                    if (aOwner && !bOwner) return -1;
+                    if (!aOwner && bOwner) return 1;
+                    return a.displayName.compareTo(b.displayName);
+                  });
 
                 return ConstrainedBox(
                   constraints: const BoxConstraints(maxHeight: 340),
@@ -188,7 +203,8 @@ class HivemindMembersSheet extends ConsumerWidget {
                     shrinkWrap: true,
                     physics: const ClampingScrollPhysics(),
                     itemCount: sortedMembers.length,
-                    separatorBuilder: (context, index) => const SizedBox(height: 8),
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 8),
                     itemBuilder: (context, index) {
                       final member = sortedMembers[index];
                       final isCurrent = member.userId == effectiveUserId;
@@ -196,18 +212,27 @@ class HivemindMembersSheet extends ConsumerWidget {
                       final initial = member.displayName.isNotEmpty
                           ? member.displayName.substring(0, 1).toUpperCase()
                           : '?';
-                      final joinedFormatted = DateFormat.yMMMd(locale).format(member.joinedAt);
+                      final joinedFormatted = DateFormat.yMMMd(
+                        locale,
+                      ).format(member.joinedAt);
 
                       return Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 10,
+                        ),
                         decoration: BoxDecoration(
                           color: isCurrent
-                              ? (isDark ? AppColors.darkSurfaceSubtle : AppColors.lightSurfaceSubtle)
+                              ? (isDark
+                                    ? AppColors.darkSurfaceSubtle
+                                    : AppColors.lightSurfaceSubtle)
                               : Colors.transparent,
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(
                             color: isCurrent
-                                ? (isDark ? AppColors.darkBorder : AppColors.lightBorder)
+                                ? (isDark
+                                      ? AppColors.darkBorder
+                                      : AppColors.lightBorder)
                                 : Colors.transparent,
                             width: 1,
                           ),
@@ -248,10 +273,17 @@ class HivemindMembersSheet extends ConsumerWidget {
                                       if (isCurrent) ...[
                                         const SizedBox(width: 6),
                                         Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 6,
+                                            vertical: 1.5,
+                                          ),
                                           decoration: BoxDecoration(
-                                            color: AppColors.primary.withValues(alpha: isDark ? 0.2 : 0.12),
-                                            borderRadius: BorderRadius.circular(6),
+                                            color: AppColors.primary.withValues(
+                                              alpha: isDark ? 0.2 : 0.12,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              6,
+                                            ),
                                           ),
                                           child: Text(
                                             l10n.memberYou,
@@ -341,7 +373,9 @@ class _MemberAvatar extends StatelessWidget {
       decoration: BoxDecoration(
         color: isCurrent
             ? AppColors.primary.withValues(alpha: isDark ? 0.22 : 0.15)
-            : (isDark ? AppColors.darkSurfaceSubtle : AppColors.lightSurfaceSubtle),
+            : (isDark
+                  ? AppColors.darkSurfaceSubtle
+                  : AppColors.lightSurfaceSubtle),
         shape: BoxShape.circle,
         border: Border.all(
           color: isCurrent
@@ -357,7 +391,9 @@ class _MemberAvatar extends StatelessWidget {
           fontWeight: FontWeight.w700,
           color: isCurrent
               ? AppColors.primary
-              : (isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary),
+              : (isDark
+                    ? AppColors.darkTextPrimary
+                    : AppColors.lightTextPrimary),
         ),
       ),
     );

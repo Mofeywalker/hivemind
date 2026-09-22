@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-enum AppLanguage {
-  system,
-  english,
-  german,
-}
+enum AppLanguage { system, english, german }
 
 class LocaleNotifier extends StateNotifier<Locale?> {
   LocaleNotifier() : super(null);

@@ -17,8 +17,10 @@ void main() {
       expect(enFile.existsSync(), isTrue);
       expect(deFile.existsSync(), isTrue);
 
-      final enJson = jsonDecode(enFile.readAsStringSync()) as Map<String, dynamic>;
-      final deJson = jsonDecode(deFile.readAsStringSync()) as Map<String, dynamic>;
+      final enJson =
+          jsonDecode(enFile.readAsStringSync()) as Map<String, dynamic>;
+      final deJson =
+          jsonDecode(deFile.readAsStringSync()) as Map<String, dynamic>;
 
       final enKeys = enJson.keys.where((k) => !k.startsWith('@')).toSet();
       final deKeys = deJson.keys.where((k) => !k.startsWith('@')).toSet();
@@ -26,8 +28,16 @@ void main() {
       final missingInDe = enKeys.difference(deKeys);
       final extraInDe = deKeys.difference(enKeys);
 
-      expect(missingInDe, isEmpty, reason: 'Keys missing in German translations: $missingInDe');
-      expect(extraInDe, isEmpty, reason: 'Extra keys found in German translations: $extraInDe');
+      expect(
+        missingInDe,
+        isEmpty,
+        reason: 'Keys missing in German translations: $missingInDe',
+      );
+      expect(
+        extraInDe,
+        isEmpty,
+        reason: 'Extra keys found in German translations: $extraInDe',
+      );
     });
 
     test('English and German AppLocalizations translations', () {
@@ -85,15 +95,54 @@ void main() {
       final l10nDe = AppLocalizationsDe();
       final l10nEn = AppLocalizationsEn();
 
-      expect(RecurrenceUtil.getReadablePresetTitle(RecurrencePreset.daily, l10nDe), 'Täglich');
-      expect(RecurrenceUtil.getReadablePresetTitle(RecurrencePreset.daily, l10nEn), 'Every day');
-      expect(RecurrenceUtil.getReadablePresetTitle(RecurrencePreset.weekly, l10nDe), 'Wöchentlich');
-      expect(RecurrenceUtil.getReadablePresetTitle(RecurrencePreset.customDays, l10nDe), 'Bestimmte Tage');
-      expect(RecurrenceUtil.getReadablePresetTitle(RecurrencePreset.customDays, l10nEn), 'Specific days');
-      expect(RecurrenceUtil.getReadablePresetTitle(RecurrencePreset.biweekly, l10nDe), 'Alle 2 Wochen');
-      expect(RecurrenceUtil.getReadablePresetTitle(RecurrencePreset.monthly, l10nDe), 'Monatlich');
-      expect(RecurrenceUtil.getReadablePresetTitle(RecurrencePreset.weekdays, l10nDe), 'Jeden Werktag (Mo - Fr)');
-      expect(RecurrenceUtil.getReadablePresetTitle(RecurrencePreset.none, l10nDe), 'Einmalig');
+      expect(
+        RecurrenceUtil.getReadablePresetTitle(RecurrencePreset.daily, l10nDe),
+        'Täglich',
+      );
+      expect(
+        RecurrenceUtil.getReadablePresetTitle(RecurrencePreset.daily, l10nEn),
+        'Every day',
+      );
+      expect(
+        RecurrenceUtil.getReadablePresetTitle(RecurrencePreset.weekly, l10nDe),
+        'Wöchentlich',
+      );
+      expect(
+        RecurrenceUtil.getReadablePresetTitle(
+          RecurrencePreset.customDays,
+          l10nDe,
+        ),
+        'Bestimmte Tage',
+      );
+      expect(
+        RecurrenceUtil.getReadablePresetTitle(
+          RecurrencePreset.customDays,
+          l10nEn,
+        ),
+        'Specific days',
+      );
+      expect(
+        RecurrenceUtil.getReadablePresetTitle(
+          RecurrencePreset.biweekly,
+          l10nDe,
+        ),
+        'Alle 2 Wochen',
+      );
+      expect(
+        RecurrenceUtil.getReadablePresetTitle(RecurrencePreset.monthly, l10nDe),
+        'Monatlich',
+      );
+      expect(
+        RecurrenceUtil.getReadablePresetTitle(
+          RecurrencePreset.weekdays,
+          l10nDe,
+        ),
+        'Jeden Werktag (Mo - Fr)',
+      );
+      expect(
+        RecurrenceUtil.getReadablePresetTitle(RecurrencePreset.none, l10nDe),
+        'Einmalig',
+      );
     });
 
     test('LocaleNotifier switching behavior', () {
@@ -114,7 +163,9 @@ void main() {
       expect(notifier.currentLanguage, AppLanguage.system);
     });
 
-    testWidgets('Renders localized text inside Widget tree for German', (tester) async {
+    testWidgets('Renders localized text inside Widget tree for German', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           locale: const Locale('de'),

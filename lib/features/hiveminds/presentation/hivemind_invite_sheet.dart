@@ -10,10 +10,7 @@ import '../domain/hivemind_model.dart';
 class HivemindInviteSheet extends StatelessWidget {
   final Hivemind hivemind;
 
-  const HivemindInviteSheet({
-    super.key,
-    required this.hivemind,
-  });
+  const HivemindInviteSheet({super.key, required this.hivemind});
 
   String get _deepLink => 'hivemind://join?code=${hivemind.inviteCode}';
 
@@ -52,7 +49,9 @@ class HivemindInviteSheet extends StatelessWidget {
               fontSize: 22,
               fontWeight: FontWeight.w700,
               letterSpacing: -0.5,
-              color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+              color: isDark
+                  ? AppColors.darkTextPrimary
+                  : AppColors.lightTextPrimary,
             ),
           ),
           const SizedBox(height: 8),
@@ -61,7 +60,9 @@ class HivemindInviteSheet extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 14.5,
-              color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+              color: isDark
+                  ? AppColors.darkTextSecondary
+                  : AppColors.lightTextSecondary,
             ),
           ),
           const SizedBox(height: 24),
@@ -104,7 +105,9 @@ class HivemindInviteSheet extends StatelessWidget {
               constraints: const BoxConstraints(minHeight: 52),
               padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
               decoration: BoxDecoration(
-                color: isDark ? AppColors.darkSurfaceSubtle : AppColors.lightSurfaceSubtle,
+                color: isDark
+                    ? AppColors.darkSurfaceSubtle
+                    : AppColors.lightSurfaceSubtle,
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(
                   color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
@@ -124,7 +127,11 @@ class HivemindInviteSheet extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 14),
-                  const Icon(Icons.copy_rounded, size: 20, color: AppColors.primary),
+                  const Icon(
+                    Icons.copy_rounded,
+                    size: 20,
+                    color: AppColors.primary,
+                  ),
                 ],
               ),
             ),
@@ -137,7 +144,11 @@ class HivemindInviteSheet extends StatelessWidget {
               Expanded(
                 child: MinimalButton(
                   text: l10n.shareLink,
-                  icon: const Icon(Icons.share_outlined, size: 18, color: Colors.black),
+                  icon: const Icon(
+                    Icons.share_outlined,
+                    size: 18,
+                    color: Colors.black,
+                  ),
                   onPressed: () => _shareInvite(context),
                 ),
               ),
@@ -149,7 +160,9 @@ class HivemindInviteSheet extends StatelessWidget {
                   icon: Icon(
                     Icons.copy,
                     size: 18,
-                    color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                    color: isDark
+                        ? AppColors.darkTextPrimary
+                        : AppColors.lightTextPrimary,
                   ),
                   onPressed: () => _copyCode(context),
                 ),

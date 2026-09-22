@@ -53,12 +53,15 @@ class _LoginScreenState extends State<LoginScreen> {
           password: password,
         );
         if (cred.user != null) {
-          await FirebaseFirestore.instance.collection('users').doc(cred.user!.uid).set({
-            'display_name': email.split('@').first,
-            'email': email,
-            'created_at': DateTime.now().toUtc().toIso8601String(),
-            'updated_at': DateTime.now().toUtc().toIso8601String(),
-          }, SetOptions(merge: true));
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(cred.user!.uid)
+              .set({
+                'display_name': email.split('@').first,
+                'email': email,
+                'created_at': DateTime.now().toUtc().toIso8601String(),
+                'updated_at': DateTime.now().toUtc().toIso8601String(),
+              }, SetOptions(merge: true));
         }
         if (mounted) {
           context.go('/');
@@ -76,7 +79,8 @@ class _LoginScreenState extends State<LoginScreen> {
           if (e.code == 'user-not-found' || e.code == 'invalid-credential') {
             setState(() {
               _isSignUp = true;
-              _errorMessage = 'Noch kein Konto gefunden. Bitte tippe auf "Konto erstellen", um dich zu registrieren.';
+              _errorMessage =
+                  'Noch kein Konto gefunden. Bitte tippe auf "Konto erstellen", um dich zu registrieren.';
             });
             return;
           }
@@ -202,7 +206,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             fontSize: 28,
                             fontWeight: FontWeight.w800,
                             letterSpacing: -0.8,
-                            color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                            color: isDark
+                                ? AppColors.darkTextPrimary
+                                : AppColors.lightTextPrimary,
                           ),
                         ),
                       ],
@@ -212,11 +218,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       _useMagicLink
                           ? l10n.authSubtitleMagicLink
                           : _isSignUp
-                              ? l10n.authSubtitleSignUp
-                              : l10n.authSubtitlePassword,
+                          ? l10n.authSubtitleSignUp
+                          : l10n.authSubtitlePassword,
                       style: TextStyle(
                         fontSize: 16,
-                        color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                        color: isDark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.lightTextSecondary,
                         height: 1.4,
                       ),
                     ),
@@ -229,11 +237,17 @@ class _LoginScreenState extends State<LoginScreen> {
                         decoration: BoxDecoration(
                           color: AppColors.error.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
+                          border: Border.all(
+                            color: AppColors.error.withValues(alpha: 0.3),
+                          ),
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.error_outline, size: 18, color: AppColors.error),
+                            const Icon(
+                              Icons.error_outline,
+                              size: 18,
+                              color: AppColors.error,
+                            ),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
@@ -257,11 +271,17 @@ class _LoginScreenState extends State<LoginScreen> {
                         decoration: BoxDecoration(
                           color: AppColors.success.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: AppColors.success.withValues(alpha: 0.3)),
+                          border: Border.all(
+                            color: AppColors.success.withValues(alpha: 0.3),
+                          ),
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.check_circle_outline, size: 18, color: AppColors.success),
+                            const Icon(
+                              Icons.check_circle_outline,
+                              size: 18,
+                              color: AppColors.success,
+                            ),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
@@ -286,7 +306,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       hintText: l10n.emailHint,
                       keyboardType: TextInputType.emailAddress,
                       validator: (val) {
-                        if (val == null || val.trim().isEmpty) return l10n.emailRequired;
+                        if (val == null || val.trim().isEmpty) {
+                          return l10n.emailRequired;
+                        }
                         if (!val.contains('@')) return l10n.emailInvalid;
                         return null;
                       },
@@ -315,12 +337,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       text: _isLoading
                           ? l10n.loading
                           : _useMagicLink
-                              ? l10n.buttonSendMagicLink
-                              : _isSignUp
-                                  ? l10n.buttonCreateAccount
-                                  : l10n.buttonSignIn,
+                          ? l10n.buttonSendMagicLink
+                          : _isSignUp
+                          ? l10n.buttonCreateAccount
+                          : l10n.buttonSignIn,
                       isLoading: _isLoading,
-                      onPressed: _useMagicLink ? _handleMagicLinkAuth : _handleEmailPasswordAuth,
+                      onPressed: _useMagicLink
+                          ? _handleMagicLinkAuth
+                          : _handleEmailPasswordAuth,
                     ),
 
                     const SizedBox(height: 16),
@@ -335,7 +359,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         TextButton(
                           style: TextButton.styleFrom(
                             minimumSize: const Size(48, 44),
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 8,
+                            ),
                           ),
                           onPressed: () {
                             setState(() {
@@ -345,7 +372,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             });
                           },
                           child: Text(
-                            _useMagicLink ? l10n.usePasswordInstead : l10n.useMagicLink,
+                            _useMagicLink
+                                ? l10n.usePasswordInstead
+                                : l10n.useMagicLink,
                             style: const TextStyle(
                               color: AppColors.primary,
                               fontSize: 14.5,
@@ -357,7 +386,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           TextButton(
                             style: TextButton.styleFrom(
                               minimumSize: const Size(48, 44),
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 8,
+                              ),
                             ),
                             onPressed: () {
                               setState(() {
@@ -367,9 +399,13 @@ class _LoginScreenState extends State<LoginScreen> {
                               });
                             },
                             child: Text(
-                              _isSignUp ? l10n.haveAccountSignIn : l10n.needAccountSignUp,
+                              _isSignUp
+                                  ? l10n.haveAccountSignIn
+                                  : l10n.needAccountSignUp,
                               style: TextStyle(
-                                color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                                color: isDark
+                                    ? AppColors.darkTextSecondary
+                                    : AppColors.lightTextSecondary,
                                 fontSize: 14.5,
                                 fontWeight: FontWeight.w500,
                               ),

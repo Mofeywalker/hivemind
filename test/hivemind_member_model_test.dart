@@ -29,10 +29,7 @@ void main() {
     });
 
     test('fromJson handles missing profiles gracefully', () {
-      final json = {
-        'user_id': 'usr-999',
-        'hivemind_id': 'hive-456',
-      };
+      final json = {'user_id': 'usr-999', 'hivemind_id': 'hive-456'};
 
       final member = HivemindMember.fromJson(json);
       expect(member.userId, 'usr-999');

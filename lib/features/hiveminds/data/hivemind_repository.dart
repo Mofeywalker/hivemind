@@ -8,11 +8,9 @@ class HivemindRepository {
   final FirebaseFirestore _firestore;
   final FirebaseAuth _auth;
 
-  HivemindRepository({
-    FirebaseFirestore? firestore,
-    FirebaseAuth? auth,
-  })  : _firestore = firestore ?? FirebaseFirestore.instance,
-        _auth = auth ?? FirebaseAuth.instance;
+  HivemindRepository({FirebaseFirestore? firestore, FirebaseAuth? auth})
+    : _firestore = firestore ?? FirebaseFirestore.instance,
+      _auth = auth ?? FirebaseAuth.instance;
 
   Future<List<Hivemind>> getJoinedHiveminds() async {
     final userId = _auth.currentUser?.uid;
@@ -25,10 +23,7 @@ class HivemindRepository {
 
     return snapshot.docs.map((doc) {
       final data = doc.data();
-      return Hivemind.fromJson({
-        ...data,
-        'id': doc.id,
-      });
+      return Hivemind.fromJson({...data, 'id': doc.id});
     }).toList();
   }
 
@@ -38,7 +33,9 @@ class HivemindRepository {
     String icon = '🐝',
   }) async {
     final userId = _auth.currentUser?.uid;
-    if (userId == null) throw Exception('Must be logged in to create a Hivemind');
+    if (userId == null) {
+      throw Exception('Must be logged in to create a Hivemind');
+    }
 
     final inviteCode = _generateShortCode();
     final docRef = _firestore.collection('hiveminds').doc();
@@ -61,7 +58,8 @@ class HivemindRepository {
       'user_id': userId,
       'hivemind_id': hivemindId,
       'role': 'owner',
-      'display_name': user?.displayName ?? user?.email?.split('@').first ?? 'Member',
+      'display_name':
+          user?.displayName ?? user?.email?.split('@').first ?? 'Member',
       'avatar_url': user?.photoURL,
       'joined_at': nowIso,
     };
@@ -99,7 +97,8 @@ class HivemindRepository {
       'user_id': userId,
       'hivemind_id': hivemindId,
       'role': 'member',
-      'display_name': user?.displayName ?? user?.email?.split('@').first ?? 'Member',
+      'display_name':
+          user?.displayName ?? user?.email?.split('@').first ?? 'Member',
       'avatar_url': user?.photoURL,
       'joined_at': nowIso,
     };
@@ -108,17 +107,19 @@ class HivemindRepository {
     batch.update(doc.reference, {
       'member_ids': FieldValue.arrayUnion([userId]),
     });
-    batch.set(doc.reference.collection('members').doc(userId), memberMap, SetOptions(merge: true));
+    batch.set(
+      doc.reference.collection('members').doc(userId),
+      memberMap,
+      SetOptions(merge: true),
+    );
     await batch.commit();
 
-    return Hivemind.fromJson({
-      ...doc.data(),
-      'id': hivemindId,
-    });
+    return Hivemind.fromJson({...doc.data(), 'id': hivemindId});
   }
 
   String _generateShortCode() {
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // omit easily confused 0, O, 1, I
+    const chars =
+        'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // omit easily confused 0, O, 1, I
     final rnd = Random();
     return String.fromCharCodes(
       Iterable.generate(6, (_) => chars.codeUnitAt(rnd.nextInt(chars.length))),
@@ -134,11 +135,13 @@ class HivemindRepository {
           .get();
 
       return snapshot.docs
-          .map((d) => HivemindMember.fromJson({
-                ...d.data(),
-                'user_id': d.id,
-                'hivemind_id': hivemindId,
-              }))
+          .map(
+            (d) => HivemindMember.fromJson({
+              ...d.data(),
+              'user_id': d.id,
+              'hivemind_id': hivemindId,
+            }),
+          )
           .toList();
     } catch (_) {
       return [];
@@ -153,11 +156,13 @@ class HivemindRepository {
         .snapshots()
         .map((snapshot) {
           return snapshot.docs
-              .map((d) => HivemindMember.fromJson({
-                    ...d.data(),
-                    'user_id': d.id,
-                    'hivemind_id': hivemindId,
-                  }))
+              .map(
+                (d) => HivemindMember.fromJson({
+                  ...d.data(),
+                  'user_id': d.id,
+                  'hivemind_id': hivemindId,
+                }),
+              )
               .toList();
         });
   }

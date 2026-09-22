@@ -20,14 +20,15 @@ class ReminderRepository {
     FirebaseFirestore? firestore,
     FirebaseAuth? auth,
     Locale? Function()? localeGetter,
-  })  : _firestore = firestore ?? FirebaseFirestore.instance,
-        _auth = auth ?? FirebaseAuth.instance,
-        _localeGetter = localeGetter;
+  }) : _firestore = firestore ?? FirebaseFirestore.instance,
+       _auth = auth ?? FirebaseAuth.instance,
+       _localeGetter = localeGetter;
 
   String _getLocalizedDueBody() {
     try {
       final preferred = _localeGetter?.call();
-      final locale = preferred ?? WidgetsBinding.instance.platformDispatcher.locale;
+      final locale =
+          preferred ?? WidgetsBinding.instance.platformDispatcher.locale;
       final l10n = lookupAppLocalizations(locale);
       return l10n.reminderIsDue;
     } catch (_) {
@@ -162,14 +163,20 @@ class ReminderRepository {
     return reminder;
   }
 
-  Future<void> toggleCompletion(Reminder reminder, {Iterable<String>? hiveMemberUserIds}) async {
+  Future<void> toggleCompletion(
+    Reminder reminder, {
+    Iterable<String>? hiveMemberUserIds,
+  }) async {
     final userId = _auth.currentUser?.uid;
-    final List<String> updatedCompletedByIds = List<String>.from(reminder.completedByIds);
+    final List<String> updatedCompletedByIds = List<String>.from(
+      reminder.completedByIds,
+    );
 
     final bool allMembersCompleted;
 
     if (reminder.completionScope == ReminderCompletionScope.anyone) {
-      final isCurrentlyCompleted = reminder.isCompleted || updatedCompletedByIds.isNotEmpty;
+      final isCurrentlyCompleted =
+          reminder.isCompleted || updatedCompletedByIds.isNotEmpty;
       if (isCurrentlyCompleted) {
         allMembersCompleted = false;
         updatedCompletedByIds.clear();
@@ -181,7 +188,8 @@ class ReminderRepository {
       }
     } else if (reminder.completionScope == ReminderCompletionScope.assigned) {
       final assignedId = reminder.assignedTo;
-      final isCurrentlyCompleted = reminder.isCompleted ||
+      final isCurrentlyCompleted =
+          reminder.isCompleted ||
           (assignedId != null && updatedCompletedByIds.contains(assignedId)) ||
           (userId != null && updatedCompletedByIds.contains(userId));
 
@@ -212,10 +220,14 @@ class ReminderRepository {
         }
       }
 
-      final memberIds = hiveMemberUserIds?.toList() ?? (userId != null ? [userId] : <String>[]);
+      final memberIds =
+          hiveMemberUserIds?.toList() ??
+          (userId != null ? [userId] : <String>[]);
       allMembersCompleted = memberIds.isNotEmpty
           ? memberIds.every(updatedCompletedByIds.contains)
-          : (userId != null ? updatedCompletedByIds.contains(userId) : !reminder.isCompleted);
+          : (userId != null
+                ? updatedCompletedByIds.contains(userId)
+                : !reminder.isCompleted);
     }
 
     final docRef = _firestore.collection('reminders').doc(reminder.id);
@@ -255,8 +267,12 @@ class ReminderRepository {
     // Standard non-recurring completion
     await docRef.update({
       'is_completed': allMembersCompleted,
-      'completed_at': allMembersCompleted ? DateTime.now().toUtc().toIso8601String() : null,
-      'completed_by': updatedCompletedByIds.isNotEmpty ? updatedCompletedByIds.last : null,
+      'completed_at': allMembersCompleted
+          ? DateTime.now().toUtc().toIso8601String()
+          : null,
+      'completed_by': updatedCompletedByIds.isNotEmpty
+          ? updatedCompletedByIds.last
+          : null,
       'completed_by_ids': updatedCompletedByIds,
       'updated_at': DateTime.now().toUtc().toIso8601String(),
     });
@@ -324,7 +340,8 @@ class ReminderRepository {
             payload: r.id,
           );
         } else if (r.isCompleted) {
-          if (_cancelledReminderIds.contains(r.id) && !_scheduledReminderTimestamps.containsKey(r.id)) {
+          if (_cancelledReminderIds.contains(r.id) &&
+              !_scheduledReminderTimestamps.containsKey(r.id)) {
             continue;
           }
 

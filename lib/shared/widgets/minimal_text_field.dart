@@ -49,7 +49,9 @@ class MinimalTextField extends StatelessWidget {
             style: TextStyle(
               fontSize: 14.5,
               fontWeight: FontWeight.w600,
-              color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+              color: isDark
+                  ? AppColors.darkTextPrimary
+                  : AppColors.lightTextPrimary,
               letterSpacing: -0.1,
             ),
           ),
@@ -66,7 +68,9 @@ class MinimalTextField extends StatelessWidget {
           onFieldSubmitted: onSubmitted,
           validator: validator,
           style: TextStyle(
-            color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
             fontSize: 16,
             fontWeight: FontWeight.w500,
           ),

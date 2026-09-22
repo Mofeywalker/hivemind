@@ -13,7 +13,9 @@ final joinedHivemindsProvider = FutureProvider<List<Hivemind>>((ref) async {
   return repo.getJoinedHiveminds();
 });
 
-final activeHivemindMembersProvider = StreamProvider<List<HivemindMember>>((ref) {
+final activeHivemindMembersProvider = StreamProvider<List<HivemindMember>>((
+  ref,
+) {
   final activeHivemind = ref.watch(activeHivemindProvider);
   if (activeHivemind == null) return Stream.value([]);
 
@@ -21,9 +23,10 @@ final activeHivemindMembersProvider = StreamProvider<List<HivemindMember>>((ref)
   return repo.streamHivemindMembers(activeHivemind.id);
 });
 
-final activeHivemindProvider = StateNotifierProvider<ActiveHivemindNotifier, Hivemind?>((ref) {
-  return ActiveHivemindNotifier(ref);
-});
+final activeHivemindProvider =
+    StateNotifierProvider<ActiveHivemindNotifier, Hivemind?>((ref) {
+      return ActiveHivemindNotifier(ref);
+    });
 
 class ActiveHivemindNotifier extends StateNotifier<Hivemind?> {
   static const String _prefKey = 'last_active_hivemind_id';
@@ -58,9 +61,11 @@ class ActiveHivemindNotifier extends StateNotifier<Hivemind?> {
 
   void setActive(Hivemind hivemind) {
     state = hivemind;
-    SharedPreferences.getInstance().then((prefs) {
-      prefs.setString(_prefKey, hivemind.id);
-    }).catchError((_) {});
+    SharedPreferences.getInstance()
+        .then((prefs) {
+          prefs.setString(_prefKey, hivemind.id);
+        })
+        .catchError((_) {});
   }
 
   Future<void> refresh() async {

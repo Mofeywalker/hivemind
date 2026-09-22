@@ -16,7 +16,9 @@ class TimezoneService {
         final timezoneInfo = await FlutterTimezone.getLocalTimezone();
         tz.setLocalLocation(tz.getLocation(timezoneInfo.identifier));
       } catch (e) {
-        debugPrint('Could not configure local timezone, fallback to default: $e');
+        debugPrint(
+          'Could not configure local timezone, fallback to default: $e',
+        );
       }
       _isInitialized = true;
     } catch (e) {

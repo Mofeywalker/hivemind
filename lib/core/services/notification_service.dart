@@ -24,7 +24,9 @@ class NotificationService {
   static Future<void> initialize({
     void Function(NotificationResponse)? onNotificationTap,
   }) async {
-    const androidSettings = AndroidInitializationSettings('@drawable/ic_notification');
+    const androidSettings = AndroidInitializationSettings(
+      '@drawable/ic_notification',
+    );
     const darwinSettings = DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
@@ -46,7 +48,8 @@ class NotificationService {
       if (!kIsWeb && Platform.isAndroid) {
         final androidImpl = _plugin
             .resolvePlatformSpecificImplementation<
-                AndroidFlutterLocalNotificationsPlugin>();
+              AndroidFlutterLocalNotificationsPlugin
+            >();
 
         const reminderChannel = AndroidNotificationChannel(
           channelId,
@@ -69,11 +72,14 @@ class NotificationService {
         await androidImpl?.createNotificationChannel(activityChannel);
 
         // Request permissions asynchronously without blocking the startup frame
-        androidImpl?.requestNotificationsPermission().then((_) {
-          androidImpl.requestExactAlarmsPermission();
-        }).catchError((e) {
-          debugPrint('Notification permissions request note: $e');
-        });
+        androidImpl
+            ?.requestNotificationsPermission()
+            .then((_) {
+              androidImpl.requestExactAlarmsPermission();
+            })
+            .catchError((e) {
+              debugPrint('Notification permissions request note: $e');
+            });
       }
     } catch (e) {
       debugPrint('Error initializing local notifications: $e');
@@ -110,13 +116,7 @@ class NotificationService {
         iOS: darwinDetails,
       );
 
-      await _plugin.show(
-        id,
-        title,
-        body,
-        details,
-        payload: payload,
-      );
+      await _plugin.show(id, title, body, details, payload: payload);
     } catch (e) {
       debugPrint('Error showing immediate notification #$id: $e');
     }
@@ -131,7 +131,9 @@ class NotificationService {
   }) async {
     try {
       final tzScheduled = TimezoneService.fromDateTime(scheduledDate);
-      if (tzScheduled.isBefore(tz.TZDateTime.now(TimezoneService.localLocation))) {
+      if (tzScheduled.isBefore(
+        tz.TZDateTime.now(TimezoneService.localLocation),
+      )) {
         return; // Don't schedule past dates
       }
 
@@ -158,16 +160,20 @@ class NotificationService {
         iOS: darwinDetails,
       );
 
-      AndroidScheduleMode scheduleMode = AndroidScheduleMode.exactAllowWhileIdle;
+      AndroidScheduleMode scheduleMode =
+          AndroidScheduleMode.exactAllowWhileIdle;
       if (!kIsWeb && Platform.isAndroid) {
         final androidImpl = _plugin
             .resolvePlatformSpecificImplementation<
-                AndroidFlutterLocalNotificationsPlugin>();
-        final canExact = await androidImpl?.canScheduleExactAlarms() ?? false;
+              AndroidFlutterLocalNotificationsPlugin
+            >();
+        final canExact =
+            await androidImpl?.canScheduleExactNotifications() ?? false;
         if (!canExact) {
           scheduleMode = AndroidScheduleMode.inexactAllowWhileIdle;
           debugPrint(
-              'Exact alarms not permitted. Falling back to inexactAllowWhileIdle for reminder #$id');
+            'Exact alarms not permitted. Falling back to inexactAllowWhileIdle for reminder #$id',
+          );
         }
       }
 
@@ -192,8 +198,9 @@ class NotificationService {
     try {
       final androidImpl = _plugin
           .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>();
-      return await androidImpl?.canScheduleExactAlarms() ?? false;
+            AndroidFlutterLocalNotificationsPlugin
+          >();
+      return await androidImpl?.canScheduleExactNotifications() ?? false;
     } catch (_) {
       return false;
     }
@@ -204,7 +211,8 @@ class NotificationService {
     try {
       final androidImpl = _plugin
           .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>();
+            AndroidFlutterLocalNotificationsPlugin
+          >();
       await androidImpl?.requestExactAlarmsPermission();
     } catch (e) {
       debugPrint('Error requesting exact alarms permission: $e');

@@ -20,11 +20,11 @@ class RemindersNotifier extends StateNotifier<AsyncValue<List<Reminder>>> {
   static final Map<String, List<Reminder>> _memoryCache = {};
 
   RemindersNotifier(this._repo, this._hivemindId)
-      : super(
-          _hivemindId != null && _memoryCache.containsKey(_hivemindId)
-              ? AsyncValue.data(_memoryCache[_hivemindId]!)
-              : const AsyncValue.loading(),
-        ) {
+    : super(
+        _hivemindId != null && _memoryCache.containsKey(_hivemindId)
+            ? AsyncValue.data(_memoryCache[_hivemindId]!)
+            : const AsyncValue.loading(),
+      ) {
     _init();
   }
 
@@ -43,7 +43,8 @@ class RemindersNotifier extends StateNotifier<AsyncValue<List<Reminder>>> {
     } catch (e, st) {
       // Suppress index-building errors (failed-precondition) — treat as empty list
       // while Firestore finishes building the composite index.
-      final isIndexBuilding = e.toString().contains('failed-precondition') ||
+      final isIndexBuilding =
+          e.toString().contains('failed-precondition') ||
           e.toString().contains('requires an index');
       if (mounted) {
         if (isIndexBuilding || _memoryCache.containsKey(_hivemindId)) {
@@ -54,22 +55,27 @@ class RemindersNotifier extends StateNotifier<AsyncValue<List<Reminder>>> {
       }
     }
 
-    _streamSub = _repo.streamReminders(_hivemindId).listen(
-      (reminders) {
-        _memoryCache[_hivemindId] = reminders;
-        if (mounted) {
-          state = AsyncValue.data(reminders);
-        }
-      },
-      onError: (err, st) {
-        // Suppress index-building errors on the stream — data will arrive once built
-        final isIndexBuilding = err.toString().contains('failed-precondition') ||
-            err.toString().contains('requires an index');
-        if (!isIndexBuilding && mounted && !_memoryCache.containsKey(_hivemindId)) {
-          state = AsyncValue.error(err, st);
-        }
-      },
-    );
+    _streamSub = _repo
+        .streamReminders(_hivemindId)
+        .listen(
+          (reminders) {
+            _memoryCache[_hivemindId] = reminders;
+            if (mounted) {
+              state = AsyncValue.data(reminders);
+            }
+          },
+          onError: (err, st) {
+            // Suppress index-building errors on the stream — data will arrive once built
+            final isIndexBuilding =
+                err.toString().contains('failed-precondition') ||
+                err.toString().contains('requires an index');
+            if (!isIndexBuilding &&
+                mounted &&
+                !_memoryCache.containsKey(_hivemindId)) {
+              state = AsyncValue.error(err, st);
+            }
+          },
+        );
   }
 
   Future<void> refresh() async {
@@ -105,56 +111,53 @@ class RemindersNotifier extends StateNotifier<AsyncValue<List<Reminder>>> {
   }
 }
 
-final remindersProvider = StateNotifierProvider<RemindersNotifier, AsyncValue<List<Reminder>>>((ref) {
-  final activeHivemind = ref.watch(activeHivemindProvider);
-  final repo = ref.watch(reminderRepositoryProvider);
-  return RemindersNotifier(repo, activeHivemind?.id);
-});
+final remindersProvider =
+    StateNotifierProvider<RemindersNotifier, AsyncValue<List<Reminder>>>((ref) {
+      final activeHivemind = ref.watch(activeHivemindProvider);
+      final repo = ref.watch(reminderRepositoryProvider);
+      return RemindersNotifier(repo, activeHivemind?.id);
+    });
 
 final remindersStreamProvider = remindersProvider;
 
-enum ReminderSection {
-  today,
-  tomorrow,
-  upcoming,
-  recurring,
-  completed,
-}
+enum ReminderSection { today, tomorrow, upcoming, recurring, completed }
 
-final remindersGroupedProvider = Provider<Map<ReminderSection, List<Reminder>>>((ref) {
-  final remindersAsync = ref.watch(remindersProvider);
-  final reminders = remindersAsync.value ?? [];
+final remindersGroupedProvider = Provider<Map<ReminderSection, List<Reminder>>>(
+  (ref) {
+    final remindersAsync = ref.watch(remindersProvider);
+    final reminders = remindersAsync.value ?? [];
 
-  final now = DateTime.now();
-  final todayStart = DateTime(now.year, now.month, now.day);
-  final tomorrowStart = todayStart.add(const Duration(days: 1));
-  final dayAfterTomorrowStart = todayStart.add(const Duration(days: 2));
+    final now = DateTime.now();
+    final todayStart = DateTime(now.year, now.month, now.day);
+    final tomorrowStart = todayStart.add(const Duration(days: 1));
+    final dayAfterTomorrowStart = todayStart.add(const Duration(days: 2));
 
-  final currentUserId = FirebaseService.currentUserId;
+    final currentUserId = FirebaseService.currentUserId;
 
-  final Map<ReminderSection, List<Reminder>> map = {
-    ReminderSection.today: [],
-    ReminderSection.tomorrow: [],
-    ReminderSection.upcoming: [],
-    ReminderSection.recurring: [],
-    ReminderSection.completed: [],
-  };
+    final Map<ReminderSection, List<Reminder>> map = {
+      ReminderSection.today: [],
+      ReminderSection.tomorrow: [],
+      ReminderSection.upcoming: [],
+      ReminderSection.recurring: [],
+      ReminderSection.completed: [],
+    };
 
-  for (final r in reminders) {
-    final bool isCompletedForUser = r.isCompletedByUser(currentUserId);
+    for (final r in reminders) {
+      final bool isCompletedForUser = r.isCompletedByUser(currentUserId);
 
-    if (isCompletedForUser) {
-      map[ReminderSection.completed]!.add(r);
-    } else if (r.isRecurring) {
-      map[ReminderSection.recurring]!.add(r);
-    } else if (r.dueAt.isBefore(tomorrowStart)) {
-      map[ReminderSection.today]!.add(r);
-    } else if (r.dueAt.isBefore(dayAfterTomorrowStart)) {
-      map[ReminderSection.tomorrow]!.add(r);
-    } else {
-      map[ReminderSection.upcoming]!.add(r);
+      if (isCompletedForUser) {
+        map[ReminderSection.completed]!.add(r);
+      } else if (r.isRecurring) {
+        map[ReminderSection.recurring]!.add(r);
+      } else if (r.dueAt.isBefore(tomorrowStart)) {
+        map[ReminderSection.today]!.add(r);
+      } else if (r.dueAt.isBefore(dayAfterTomorrowStart)) {
+        map[ReminderSection.tomorrow]!.add(r);
+      } else {
+        map[ReminderSection.upcoming]!.add(r);
+      }
     }
-  }
 
-  return map;
-});
+    return map;
+  },
+);

@@ -18,8 +18,10 @@ class _CardDateFormats {
   static final Map<String, DateFormat> _jm = {};
   static final Map<String, DateFormat> _mmmd = {};
 
-  static DateFormat jm(String locale) => _jm.putIfAbsent(locale, () => DateFormat.jm(locale));
-  static DateFormat mmmd(String locale) => _mmmd.putIfAbsent(locale, () => DateFormat.MMMd(locale));
+  static DateFormat jm(String locale) =>
+      _jm.putIfAbsent(locale, () => DateFormat.jm(locale));
+  static DateFormat mmmd(String locale) =>
+      _mmmd.putIfAbsent(locale, () => DateFormat.MMMd(locale));
 }
 
 class ReminderCard extends ConsumerWidget {
@@ -54,7 +56,8 @@ class ReminderCard extends ConsumerWidget {
 
     final currentUserId = FirebaseService.currentUserId;
     final bool isCompletedByUser = reminder.isCompletedByUser(currentUserId);
-    final isPast = reminder.dueAt.isBefore(DateTime.now()) && !isCompletedByUser;
+    final isPast =
+        reminder.dueAt.isBefore(DateTime.now()) && !isCompletedByUser;
 
     final members = ref.watch(activeHivemindMembersProvider).value;
     final assignedMember = reminder.assignedTo != null
@@ -62,7 +65,9 @@ class ReminderCard extends ConsumerWidget {
         : null;
     final assignedLabel = reminder.assignedTo == currentUserId
         ? l10n.assignedToYou
-        : (assignedMember != null ? l10n.assignedToUser(assignedMember.displayName) : l10n.scopeAssigned);
+        : (assignedMember != null
+              ? l10n.assignedToUser(assignedMember.displayName)
+              : l10n.scopeAssigned);
 
     final cardContent = CardContainer(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
@@ -108,7 +113,9 @@ class ReminderCard extends ConsumerWidget {
             if (isSelectionMode)
               Semantics(
                 label: canBeDeleted
-                    ? (isSelected ? 'Selected: ${reminder.title}' : 'Not selected: ${reminder.title}')
+                    ? (isSelected
+                          ? 'Selected: ${reminder.title}'
+                          : 'Not selected: ${reminder.title}')
                     : 'Cannot select: waiting for hive members to complete',
                 button: true,
                 checked: isSelected,
@@ -140,23 +147,39 @@ class ReminderCard extends ConsumerWidget {
                         shape: BoxShape.circle,
                         color: isSelected
                             ? AppColors.primary
-                            : (canBeDeleted ? Colors.transparent : (isDark ? AppColors.darkSurfaceSubtle : AppColors.lightSurfaceSubtle)),
+                            : (canBeDeleted
+                                  ? Colors.transparent
+                                  : (isDark
+                                        ? AppColors.darkSurfaceSubtle
+                                        : AppColors.lightSurfaceSubtle)),
                         border: Border.all(
                           color: isSelected
                               ? AppColors.primary
                               : (canBeDeleted
-                                  ? (isDark ? AppColors.darkTextSecondary : AppColors.lightTextMuted)
-                                  : (isDark ? AppColors.darkBorder : AppColors.lightBorder)),
+                                    ? (isDark
+                                          ? AppColors.darkTextSecondary
+                                          : AppColors.lightTextMuted)
+                                    : (isDark
+                                          ? AppColors.darkBorder
+                                          : AppColors.lightBorder)),
                           width: 2.2,
                         ),
                       ),
                       child: isSelected
-                          ? const Icon(Icons.check, size: 18, color: Colors.black)
+                          ? const Icon(
+                              Icons.check,
+                              size: 18,
+                              color: Colors.black,
+                            )
                           : (!canBeDeleted
-                              ? Icon(Icons.lock_outline_rounded,
-                                  size: 14,
-                                  color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted)
-                              : null),
+                                ? Icon(
+                                    Icons.lock_outline_rounded,
+                                    size: 14,
+                                    color: isDark
+                                        ? AppColors.darkTextMuted
+                                        : AppColors.lightTextMuted,
+                                  )
+                                : null),
                     ),
                   ),
                 ),
@@ -173,9 +196,13 @@ class ReminderCard extends ConsumerWidget {
                   behavior: HitTestBehavior.opaque,
                   onTap: () {
                     HapticFeedback.lightImpact();
-                    final members = ref.read(activeHivemindMembersProvider).value;
+                    final members = ref
+                        .read(activeHivemindMembersProvider)
+                        .value;
                     final memberIds = members?.map((m) => m.userId);
-                    ref.read(reminderRepositoryProvider).toggleCompletion(
+                    ref
+                        .read(reminderRepositoryProvider)
+                        .toggleCompletion(
                           reminder,
                           hiveMemberUserIds: memberIds,
                         );
@@ -195,12 +222,18 @@ class ReminderCard extends ConsumerWidget {
                         border: Border.all(
                           color: isCompletedByUser
                               ? AppColors.success
-                              : (isDark ? AppColors.darkTextSecondary : AppColors.lightTextMuted),
+                              : (isDark
+                                    ? AppColors.darkTextSecondary
+                                    : AppColors.lightTextMuted),
                           width: 2.2,
                         ),
                       ),
                       child: isCompletedByUser
-                          ? const Icon(Icons.check, size: 18, color: Colors.white)
+                          ? const Icon(
+                              Icons.check,
+                              size: 18,
+                              color: Colors.white,
+                            )
                           : null,
                     ),
                   ),
@@ -215,8 +248,8 @@ class ReminderCard extends ConsumerWidget {
                 behavior: HitTestBehavior.opaque,
                 onTap: isSelectionMode
                     ? (onSelectedChanged != null && canBeDeleted
-                        ? () => onSelectedChanged!(!isSelected)
-                        : null)
+                          ? () => onSelectedChanged!(!isSelected)
+                          : null)
                     : () {
                         showModalBottomSheet(
                           context: context,
@@ -229,157 +262,188 @@ class ReminderCard extends ConsumerWidget {
                               top: Radius.circular(20),
                             ),
                           ),
-                          builder: (_) => CreateReminderSheet(
-                            reminderToEdit: reminder,
-                          ),
+                          builder: (_) =>
+                              CreateReminderSheet(reminderToEdit: reminder),
                         );
                       },
                 child: Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      reminder.title,
-                      style: TextStyle(
-                        fontSize: 17.5,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: -0.3,
-                        decoration: isCompletedByUser
-                            ? TextDecoration.lineThrough
-                            : TextDecoration.none,
-                        color: isCompletedByUser
-                            ? (isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted)
-                            : (isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary),
-                      ),
-                    ),
-                    if (reminder.notes != null && reminder.notes!.isNotEmpty) ...[
-                      const SizedBox(height: 6),
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       Text(
-                        reminder.notes!,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                        reminder.title,
                         style: TextStyle(
-                          fontSize: 14.5,
-                          height: 1.35,
-                          color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                          fontSize: 17.5,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: -0.3,
+                          decoration: isCompletedByUser
+                              ? TextDecoration.lineThrough
+                              : TextDecoration.none,
+                          color: isCompletedByUser
+                              ? (isDark
+                                    ? AppColors.darkTextMuted
+                                    : AppColors.lightTextMuted)
+                              : (isDark
+                                    ? AppColors.darkTextPrimary
+                                    : AppColors.lightTextPrimary),
                         ),
                       ),
-                    ],
-                    const SizedBox(height: 12),
+                      if (reminder.notes != null &&
+                          reminder.notes!.isNotEmpty) ...[
+                        const SizedBox(height: 6),
+                        Text(
+                          reminder.notes!,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 14.5,
+                            height: 1.35,
+                            color: isDark
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary,
+                          ),
+                        ),
+                      ],
+                      const SizedBox(height: 12),
 
-                    // Metadata Pills (Time, Recurrence, Past Due, Member Completion)
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 6,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        // Due Date & Time
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.access_time_rounded,
-                              size: 15,
-                              color: isPast
-                                  ? AppColors.error
-                                  : (isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary),
-                            ),
-                            const SizedBox(width: 5),
-                            Text(
-                              '${dateFormat.format(reminder.dueAt)}, ${timeFormat.format(reminder.dueAt)}',
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
+                      // Metadata Pills (Time, Recurrence, Past Due, Member Completion)
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 6,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          // Due Date & Time
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.access_time_rounded,
+                                size: 15,
                                 color: isPast
                                     ? AppColors.error
-                                    : (isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary),
+                                    : (isDark
+                                          ? AppColors.darkTextSecondary
+                                          : AppColors.lightTextSecondary),
                               ),
-                            ),
-                          ],
-                        ),
+                              const SizedBox(width: 5),
+                              Text(
+                                '${dateFormat.format(reminder.dueAt)}, ${timeFormat.format(reminder.dueAt)}',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: isPast
+                                      ? AppColors.error
+                                      : (isDark
+                                            ? AppColors.darkTextSecondary
+                                            : AppColors.lightTextSecondary),
+                                ),
+                              ),
+                            ],
+                          ),
 
-                        // Recurrence Pill
-                        if (reminder.isRecurring)
-                          StatusPill(
-                            label: () {
-                              final preset = RecurrenceUtil.presetFromRRule(reminder.rrule);
-                              if (preset == RecurrencePreset.customDays) {
-                                return RecurrenceUtil.getReadableRecurrenceDescription(
+                          // Recurrence Pill
+                          if (reminder.isRecurring)
+                            StatusPill(
+                              label: () {
+                                final preset = RecurrenceUtil.presetFromRRule(
                                   reminder.rrule,
-                                  l10n: l10n,
-                                  isGerman: locale.startsWith('de'),
                                 );
-                              }
-                              return RecurrenceUtil.getReadablePresetTitle(preset, l10n);
-                            }(),
-                            icon: Icons.repeat_rounded,
-                            color: AppColors.primary,
-                          ),
+                                if (preset == RecurrencePreset.customDays) {
+                                  return RecurrenceUtil.getReadableRecurrenceDescription(
+                                    reminder.rrule,
+                                    l10n: l10n,
+                                    isGerman: locale.startsWith('de'),
+                                  );
+                                }
+                                return RecurrenceUtil.getReadablePresetTitle(
+                                  preset,
+                                  l10n,
+                                );
+                              }(),
+                              icon: Icons.repeat_rounded,
+                              color: AppColors.primary,
+                            ),
 
-                        // Assigned Pill (if assigned scope and not completed)
-                        if (!isCompletedByUser && reminder.completionScope == ReminderCompletionScope.assigned)
-                          StatusPill(
-                            label: assignedLabel,
-                            icon: Icons.assignment_ind_outlined,
-                            color: reminder.assignedTo == currentUserId ? AppColors.primary : (isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary),
-                          ),
+                          // Assigned Pill (if assigned scope and not completed)
+                          if (!isCompletedByUser &&
+                              reminder.completionScope ==
+                                  ReminderCompletionScope.assigned)
+                            StatusPill(
+                              label: assignedLabel,
+                              icon: Icons.assignment_ind_outlined,
+                              color: reminder.assignedTo == currentUserId
+                                  ? AppColors.primary
+                                  : (isDark
+                                        ? AppColors.darkTextSecondary
+                                        : AppColors.lightTextSecondary),
+                            ),
 
-                        // All members Pill (if all scope and not completed, in multi-member hivemind)
-                        if (!isCompletedByUser && reminder.completionScope == ReminderCompletionScope.all && totalMembersCount > 1)
-                          StatusPill(
-                            label: l10n.scopeAll,
-                            icon: Icons.groups_outlined,
-                            color: AppColors.primary,
-                          ),
+                          // All members Pill (if all scope and not completed, in multi-member hivemind)
+                          if (!isCompletedByUser &&
+                              reminder.completionScope ==
+                                  ReminderCompletionScope.all &&
+                              totalMembersCount > 1)
+                            StatusPill(
+                              label: l10n.scopeAll,
+                              icon: Icons.groups_outlined,
+                              color: AppColors.primary,
+                            ),
 
-                        // Overdue Pill
-                        if (isPast)
-                          StatusPill(
-                            label: l10n.overdue,
-                            icon: Icons.warning_amber_rounded,
-                            color: AppColors.error,
-                          ),
+                          // Overdue Pill
+                          if (isPast)
+                            StatusPill(
+                              label: l10n.overdue,
+                              icon: Icons.warning_amber_rounded,
+                              color: AppColors.error,
+                            ),
 
-                        // Member Completion Pills
-                        if (isCompletedByUser) ...[
-                          if (reminder.completionScope == ReminderCompletionScope.all) ...[
-                            if (canBeDeleted)
+                          // Member Completion Pills
+                          if (isCompletedByUser) ...[
+                            if (reminder.completionScope ==
+                                ReminderCompletionScope.all) ...[
+                              if (canBeDeleted)
+                                StatusPill(
+                                  label: l10n.completedByAll,
+                                  icon: Icons.done_all_rounded,
+                                  color: AppColors.success,
+                                )
+                              else
+                                StatusPill(
+                                  label: totalMembersCount > 1
+                                      ? '${l10n.completedFraction(completedCount, totalMembersCount)} • ${l10n.waitingForMembers}'
+                                      : l10n.waitingForMembers,
+                                  icon: Icons.hourglass_top_rounded,
+                                  color: AppColors.primary,
+                                ),
+                            ] else ...[
                               StatusPill(
-                                label: l10n.completedByAll,
+                                label: l10n.completedBySingle,
                                 icon: Icons.done_all_rounded,
                                 color: AppColors.success,
-                              )
-                            else
-                              StatusPill(
-                                label: totalMembersCount > 1
-                                    ? '${l10n.completedFraction(completedCount, totalMembersCount)} • ${l10n.waitingForMembers}'
-                                    : l10n.waitingForMembers,
-                                icon: Icons.hourglass_top_rounded,
-                                color: AppColors.primary,
                               ),
-                          ] else ...[
+                            ],
+                          ] else if (reminder.completionScope ==
+                                  ReminderCompletionScope.all &&
+                              completedCount > 0 &&
+                              totalMembersCount > 1) ...[
                             StatusPill(
-                              label: l10n.completedBySingle,
-                              icon: Icons.done_all_rounded,
-                              color: AppColors.success,
+                              label: l10n.completedFraction(
+                                completedCount,
+                                totalMembersCount,
+                              ),
+                              icon: Icons.people_outline_rounded,
+                              color: AppColors.primary,
                             ),
                           ],
-                        ] else if (reminder.completionScope == ReminderCompletionScope.all && completedCount > 0 && totalMembersCount > 1) ...[
-                          StatusPill(
-                            label: l10n.completedFraction(completedCount, totalMembersCount),
-                            icon: Icons.people_outline_rounded,
-                            color: AppColors.primary,
-                          ),
                         ],
-                      ],
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
         ),
       ),
     );
@@ -417,8 +481,12 @@ class ReminderCard extends ConsumerWidget {
           child: const Icon(Icons.delete_outline, color: AppColors.error),
         ),
         onDismissed: (_) async {
-          ref.read(remindersProvider.notifier).removeOptimistically([reminder.id]);
-          await ref.read(reminderRepositoryProvider).deleteReminder(reminder.id);
+          ref.read(remindersProvider.notifier).removeOptimistically([
+            reminder.id,
+          ]);
+          await ref
+              .read(reminderRepositoryProvider)
+              .deleteReminder(reminder.id);
           await ref.read(remindersProvider.notifier).refresh();
         },
         child: cardContent,

@@ -7,7 +7,9 @@ import 'package:hivemind/shared/widgets/status_pill.dart';
 
 void main() {
   group('UI Components Widget Tests', () {
-    testWidgets('MinimalButton displays text and triggers onPressed', (tester) async {
+    testWidgets('MinimalButton displays text and triggers onPressed', (
+      tester,
+    ) async {
       bool tapped = false;
 
       await tester.pumpWidget(
@@ -36,10 +38,7 @@ void main() {
         MaterialApp(
           theme: AppTheme.darkTheme,
           home: const Scaffold(
-            body: StatusPill(
-              label: 'Every Sunday',
-              icon: Icons.repeat,
-            ),
+            body: StatusPill(label: 'Every Sunday', icon: Icons.repeat),
           ),
         ),
       );
@@ -53,9 +52,7 @@ void main() {
         MaterialApp(
           theme: AppTheme.lightTheme,
           home: const Scaffold(
-            body: CardContainer(
-              child: Text('Card Content'),
-            ),
+            body: CardContainer(child: Text('Card Content')),
           ),
         ),
       );

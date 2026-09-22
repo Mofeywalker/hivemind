@@ -38,11 +38,15 @@ void main() {
   );
 
   group('MemberAvatarPill Widget Tests', () {
-    testWidgets('renders empty placeholder when members stream is empty', (tester) async {
+    testWidgets('renders empty placeholder when members stream is empty', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         _buildTestableWidget(
           overrides: [
-            activeHivemindMembersProvider.overrideWith((ref) => Stream.value([])),
+            activeHivemindMembersProvider.overrideWith(
+              (ref) => Stream.value([]),
+            ),
           ],
           child: MemberAvatarPill(hivemind: testHivemind),
         ),
@@ -73,7 +77,9 @@ void main() {
       await tester.pumpWidget(
         _buildTestableWidget(
           overrides: [
-            activeHivemindMembersProvider.overrideWith((ref) => Stream.value(members)),
+            activeHivemindMembersProvider.overrideWith(
+              (ref) => Stream.value(members),
+            ),
           ],
           child: MemberAvatarPill(hivemind: testHivemind),
         ),
@@ -85,18 +91,46 @@ void main() {
       expect(find.textContaining('+'), findsNothing);
     });
 
-    testWidgets('renders +2 overflow badge when 4 members are present', (tester) async {
+    testWidgets('renders +2 overflow badge when 4 members are present', (
+      tester,
+    ) async {
       final members = [
-        HivemindMember(userId: 'u1', hivemindId: 'hive-1', role: 'owner', displayName: 'Moritz', joinedAt: DateTime.now()),
-        HivemindMember(userId: 'u2', hivemindId: 'hive-1', role: 'member', displayName: 'Lisa', joinedAt: DateTime.now()),
-        HivemindMember(userId: 'u3', hivemindId: 'hive-1', role: 'member', displayName: 'Florian', joinedAt: DateTime.now()),
-        HivemindMember(userId: 'u4', hivemindId: 'hive-1', role: 'member', displayName: 'Anna', joinedAt: DateTime.now()),
+        HivemindMember(
+          userId: 'u1',
+          hivemindId: 'hive-1',
+          role: 'owner',
+          displayName: 'Moritz',
+          joinedAt: DateTime.now(),
+        ),
+        HivemindMember(
+          userId: 'u2',
+          hivemindId: 'hive-1',
+          role: 'member',
+          displayName: 'Lisa',
+          joinedAt: DateTime.now(),
+        ),
+        HivemindMember(
+          userId: 'u3',
+          hivemindId: 'hive-1',
+          role: 'member',
+          displayName: 'Florian',
+          joinedAt: DateTime.now(),
+        ),
+        HivemindMember(
+          userId: 'u4',
+          hivemindId: 'hive-1',
+          role: 'member',
+          displayName: 'Anna',
+          joinedAt: DateTime.now(),
+        ),
       ];
 
       await tester.pumpWidget(
         _buildTestableWidget(
           overrides: [
-            activeHivemindMembersProvider.overrideWith((ref) => Stream.value(members)),
+            activeHivemindMembersProvider.overrideWith(
+              (ref) => Stream.value(members),
+            ),
           ],
           child: MemberAvatarPill(hivemind: testHivemind),
         ),
@@ -114,7 +148,9 @@ void main() {
       await tester.pumpWidget(
         _buildTestableWidget(
           overrides: [
-            activeHivemindMembersProvider.overrideWith((ref) => Stream.value([])),
+            activeHivemindMembersProvider.overrideWith(
+              (ref) => Stream.value([]),
+            ),
           ],
           child: MemberAvatarPill(
             hivemind: testHivemind,

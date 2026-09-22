@@ -21,7 +21,9 @@ class HivemindMember {
       userId: (json['user_id'] ?? json['id']) as String,
       hivemindId: json['hivemind_id'] as String,
       role: (json['role'] as String?) ?? 'member',
-      displayName: (profile?['display_name'] ?? json['display_name']) as String? ?? 'Member',
+      displayName:
+          (profile?['display_name'] ?? json['display_name']) as String? ??
+          'Member',
       avatarUrl: (profile?['avatar_url'] ?? json['avatar_url']) as String?,
       joinedAt: json['joined_at'] != null
           ? DateTime.parse(json['joined_at'] as String).toLocal()

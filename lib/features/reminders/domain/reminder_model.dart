@@ -59,7 +59,9 @@ class Reminder {
         return isCompleted || completedByIds.isNotEmpty;
       case ReminderCompletionScope.assigned:
         if (isCompleted) return true;
-        if (assignedTo != null && completedByIds.contains(assignedTo)) return true;
+        if (assignedTo != null && completedByIds.contains(assignedTo)) {
+          return true;
+        }
         if (userId != null && userId == assignedTo) {
           return completedByIds.contains(userId);
         }
@@ -178,7 +180,9 @@ class Reminder {
       'rrule': rrule,
       'is_completed': isCompleted,
       'completed_at': completedAt?.toUtc().toIso8601String(),
-      'completed_by': completedBy ?? (completedByIds.isNotEmpty ? completedByIds.last : null),
+      'completed_by':
+          completedBy ??
+          (completedByIds.isNotEmpty ? completedByIds.last : null),
       'completed_by_ids': completedByIds,
       'created_by': createdBy,
       'completion_scope': completionScope.name,

@@ -97,14 +97,18 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
     });
   }
 
-  void _toggleSelectAll(List<Reminder> completedList, Set<String> memberUserIds) {
+  void _toggleSelectAll(
+    List<Reminder> completedList,
+    Set<String> memberUserIds,
+  ) {
     final eligibleIds = completedList
         .where((r) => r.isFullyCompleted(memberUserIds))
         .map((r) => r.id)
         .toSet();
 
     setState(() {
-      if (_selectedReminderIds.length == eligibleIds.length && eligibleIds.isNotEmpty) {
+      if (_selectedReminderIds.length == eligibleIds.length &&
+          eligibleIds.isNotEmpty) {
         _selectedReminderIds.clear();
       } else {
         _selectedReminderIds.addAll(eligibleIds);
@@ -167,13 +171,17 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
               fontSize: 14,
               fontWeight: FontWeight.w700,
               letterSpacing: 0.5,
-              color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+              color: isDark
+                  ? AppColors.darkTextSecondary
+                  : AppColors.lightTextSecondary,
             ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
             decoration: BoxDecoration(
-              color: isDark ? AppColors.darkSurfaceSubtle : AppColors.lightSurfaceSubtle,
+              color: isDark
+                  ? AppColors.darkSurfaceSubtle
+                  : AppColors.lightSurfaceSubtle,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
@@ -185,7 +193,9 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
               style: TextStyle(
                 fontSize: 12.5,
                 fontWeight: FontWeight.w700,
-                color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                color: isDark
+                    ? AppColors.darkTextPrimary
+                    : AppColors.lightTextPrimary,
               ),
             ),
           ),
@@ -219,7 +229,9 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
                       ? Icons.keyboard_arrow_down_rounded
                       : Icons.keyboard_arrow_right_rounded,
                   size: 22,
-                  color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                  color: isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary,
                 ),
                 const SizedBox(width: 8),
                 Text(
@@ -228,7 +240,9 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 0.5,
-                    color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
                   ),
                 ),
               ],
@@ -262,7 +276,8 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
         .where((r) => r.isFullyCompleted(memberUserIds))
         .length;
 
-    final hasAnyReminders = todayList.isNotEmpty ||
+    final hasAnyReminders =
+        todayList.isNotEmpty ||
         tomorrowList.isNotEmpty ||
         upcomingList.isNotEmpty ||
         recurringList.isNotEmpty ||
@@ -292,26 +307,38 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
                     letterSpacing: -0.3,
-                    color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                    color: isDark
+                        ? AppColors.darkTextPrimary
+                        : AppColors.lightTextPrimary,
                   ),
                 ),
                 actions: [
                   IconButton(
                     icon: Icon(
-                      _selectedReminderIds.length == eligibleCompletedCount && eligibleCompletedCount > 0
+                      _selectedReminderIds.length == eligibleCompletedCount &&
+                              eligibleCompletedCount > 0
                           ? Icons.deselect_rounded
                           : Icons.select_all_rounded,
                       size: 24,
                     ),
-                    tooltip: _selectedReminderIds.length == eligibleCompletedCount && eligibleCompletedCount > 0
+                    tooltip:
+                        _selectedReminderIds.length == eligibleCompletedCount &&
+                            eligibleCompletedCount > 0
                         ? l10n.deselectAll
                         : l10n.selectAll,
-                    onPressed: () => _toggleSelectAll(completedList, memberUserIds),
+                    onPressed: () =>
+                        _toggleSelectAll(completedList, memberUserIds),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.delete_outline_rounded, size: 26, color: AppColors.error),
+                    icon: const Icon(
+                      Icons.delete_outline_rounded,
+                      size: 26,
+                      color: AppColors.error,
+                    ),
                     tooltip: l10n.deleteSelected,
-                    onPressed: _selectedReminderIds.isNotEmpty ? _confirmDeleteSelected : null,
+                    onPressed: _selectedReminderIds.isNotEmpty
+                        ? _confirmDeleteSelected
+                        : null,
                   ),
                   const SizedBox(width: 6),
                 ],
@@ -329,12 +356,19 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
                     borderRadius: BorderRadius.circular(24),
                     child: Container(
                       constraints: const BoxConstraints(minHeight: 48),
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 8,
+                      ),
                       decoration: BoxDecoration(
-                        color: isDark ? AppColors.darkSurfaceSubtle : AppColors.lightSurfaceSubtle,
+                        color: isDark
+                            ? AppColors.darkSurfaceSubtle
+                            : AppColors.lightSurfaceSubtle,
                         borderRadius: BorderRadius.circular(24),
                         border: Border.all(
-                          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                          color: isDark
+                              ? AppColors.darkBorder
+                              : AppColors.lightBorder,
                           width: 1.2,
                         ),
                       ),
@@ -364,7 +398,9 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
                                 letterSpacing: -0.3,
-                                color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                                color: isDark
+                                    ? AppColors.darkTextPrimary
+                                    : AppColors.lightTextPrimary,
                               ),
                             ),
                           ),
@@ -372,7 +408,9 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
                           Icon(
                             Icons.keyboard_arrow_down_rounded,
                             size: 22,
-                            color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                            color: isDark
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary,
                           ),
                         ],
                       ),
@@ -413,7 +451,9 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
                           letterSpacing: -0.4,
-                          color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                          color: isDark
+                              ? AppColors.darkTextPrimary
+                              : AppColors.lightTextPrimary,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -422,7 +462,9 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 14,
-                          color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                          color: isDark
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary,
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -457,7 +499,9 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
                             Icon(
                               Icons.check_circle_outline,
                               size: 48,
-                              color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+                              color: isDark
+                                  ? AppColors.darkTextMuted
+                                  : AppColors.lightTextMuted,
                             ),
                             const SizedBox(height: 16),
                             Text(
@@ -466,7 +510,9 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
                                 letterSpacing: -0.4,
-                                color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                                color: isDark
+                                    ? AppColors.darkTextPrimary
+                                    : AppColors.lightTextPrimary,
                               ),
                             ),
                             const SizedBox(height: 6),
@@ -474,7 +520,9 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
                               l10n.allClearDescription,
                               style: TextStyle(
                                 fontSize: 14,
-                                color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                                color: isDark
+                                    ? AppColors.darkTextSecondary
+                                    : AppColors.lightTextSecondary,
                               ),
                             ),
                             const SizedBox(height: 20),
@@ -492,28 +540,45 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
                   final List<_TimelineRowItem> listItems = [];
 
                   if (todayList.isNotEmpty) {
-                    listItems.add(_SectionHeaderItem(l10n.sectionToday, todayList.length));
+                    listItems.add(
+                      _SectionHeaderItem(l10n.sectionToday, todayList.length),
+                    );
                     for (final r in todayList) {
                       listItems.add(_ReminderRowItem(r));
                     }
                   }
 
                   if (tomorrowList.isNotEmpty) {
-                    listItems.add(_SectionHeaderItem(l10n.sectionTomorrow, tomorrowList.length));
+                    listItems.add(
+                      _SectionHeaderItem(
+                        l10n.sectionTomorrow,
+                        tomorrowList.length,
+                      ),
+                    );
                     for (final r in tomorrowList) {
                       listItems.add(_ReminderRowItem(r));
                     }
                   }
 
                   if (upcomingList.isNotEmpty) {
-                    listItems.add(_SectionHeaderItem(l10n.sectionUpcoming, upcomingList.length));
+                    listItems.add(
+                      _SectionHeaderItem(
+                        l10n.sectionUpcoming,
+                        upcomingList.length,
+                      ),
+                    );
                     for (final r in upcomingList) {
                       listItems.add(_ReminderRowItem(r));
                     }
                   }
 
                   if (recurringList.isNotEmpty) {
-                    listItems.add(_SectionHeaderItem(l10n.sectionRecurring, recurringList.length));
+                    listItems.add(
+                      _SectionHeaderItem(
+                        l10n.sectionRecurring,
+                        recurringList.length,
+                      ),
+                    );
                     for (final r in recurringList) {
                       listItems.add(_ReminderRowItem(r));
                     }
@@ -529,7 +594,8 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
                   }
 
                   return RefreshIndicator(
-                    onRefresh: () => ref.read(remindersProvider.notifier).refresh(),
+                    onRefresh: () =>
+                        ref.read(remindersProvider.notifier).refresh(),
                     color: AppColors.primary,
                     child: ListView.builder(
                       physics: const AlwaysScrollableScrollPhysics(),
@@ -550,12 +616,16 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
                           case _CompletedHeaderItem(:final count):
                             return _buildCompletedHeader(count);
                           case _CompletedReminderRowItem(:final reminder):
-                            final canBeDeleted = reminder.isFullyCompleted(memberUserIds);
+                            final canBeDeleted = reminder.isFullyCompleted(
+                              memberUserIds,
+                            );
                             return ReminderCard(
                               key: ValueKey('completed_${reminder.id}'),
                               reminder: reminder,
                               isSelectionMode: _isSelectionMode,
-                              isSelected: _selectedReminderIds.contains(reminder.id),
+                              isSelected: _selectedReminderIds.contains(
+                                reminder.id,
+                              ),
                               canBeDeleted: canBeDeleted,
                               completedCount: reminder.completedByIds.length,
                               totalMembersCount: totalMembersCount,
@@ -588,7 +658,11 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
                 icon: const Icon(Icons.add_rounded, size: 24),
                 label: Text(
                   l10n.newReminder,
-                  style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15.5, letterSpacing: -0.2),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 15.5,
+                    letterSpacing: -0.2,
+                  ),
                 ),
               ),
       ),
