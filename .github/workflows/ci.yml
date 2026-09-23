@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   lint-and-test:
@@ -106,14 +106,27 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Configure Android Signing Keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "Decoding release keystore from secret..."
+            echo "$KEYSTORE_BASE64" | base64 -d > android/app/upload-keystore.jks
+          else
+            echo "::warning ::ANDROID_KEYSTORE_BASE64 secret not configured. Build will fall back to debug key."
+          fi
+
       - name: Build Android Debug APK
         run: flutter build apk --debug
 
       - name: Build Android Release APK
+        env:
+          ANDROID_KEYSTORE_PATH: upload-keystore.jks
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: flutter build apk --release
-
-      - name: Build Android Release AppBundle
-        run: flutter build appbundle --release
 
       - name: Upload Debug APK Artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -123,18 +136,24 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+      - name: Prepare hivemind-release.apk
+        run: |
+          cp build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/hivemind-release.apk
+
       - name: Upload Release APK Artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: app-release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: hivemind-release-apk
+          path: build/app/outputs/flutter-apk/hivemind-release.apk
           if-no-files-found: error
           retention-days: 30
 
-      - name: Upload Release AppBundle Artifact
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - name: Publish Release APK to GitHub Releases
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: softprops/action-gh-release@c95fe1489396fe8a9eb87238600c92e2609f0f37 # v2.2.1
         with:
-          name: app-release-bundle
-          path: build/app/outputs/bundle/release/app-release.aab
-          if-no-files-found: error
-          retention-days: 30
+          tag_name: latest
+          name: Latest Release
+          draft: false
+          prerelease: false
+          files: build/app/outputs/flutter-apk/hivemind-release.apk
