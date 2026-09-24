@@ -173,14 +173,20 @@ class FcmService {
     }
   }
 
+  /// Stores the push token plus the device's IANA timezone. The timezone is what
+  /// lets the backend render reminder push notifications in local time instead
+  /// of the functions runtime's UTC clock.
   static Future<void> syncTokenToFirestore(String token) async {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) return;
 
+      await TimezoneService.initialize();
+
       await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
         'fcm_token': token,
         'email': user.email,
+        'timezone': TimezoneService.timeZoneName,
         'updated_at': DateTime.now().toUtc().toIso8601String(),
       }, SetOptions(merge: true));
 

@@ -30,7 +30,7 @@ service cloud.firestore {
 
       allow create, update: if isSignedIn() && request.auth.uid == userId &&
         request.resource.data.keys().hasOnly(
-          ['display_name', 'email', 'avatar_url', 'fcm_token', 'created_at', 'updated_at']
+          ['display_name', 'email', 'avatar_url', 'fcm_token', 'timezone', 'created_at', 'updated_at']
         ) &&
         request.resource.data.get('email', '') is string &&
         request.resource.data.get('email', '').size() <= 254 &&
@@ -39,7 +39,9 @@ service cloud.firestore {
         request.resource.data.get('avatar_url', '') is string &&
         request.resource.data.get('avatar_url', '').size() <= 2048 &&
         request.resource.data.get('fcm_token', '') is string &&
-        request.resource.data.get('fcm_token', '').size() <= 4096;
+        request.resource.data.get('fcm_token', '').size() <= 4096 &&
+        request.resource.data.get('timezone', '') is string &&
+        request.resource.data.get('timezone', '').size() <= 64;
 
       allow list, delete: if false;
     }

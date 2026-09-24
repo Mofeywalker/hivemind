@@ -35,6 +35,7 @@ const MAX_ICON_LENGTH = 8;
 const MAX_REMINDER_TITLE_LENGTH = 200;
 const MAX_REMINDER_NOTES_LENGTH = 2000;
 const MAX_PUSH_TOKENS = 500;
+const MAX_TIMEZONE_LENGTH = 64;
 
 
 function requireUid(auth: { uid: string } | undefined): string {
@@ -84,6 +85,56 @@ async function displayNameFor(uid: string): Promise<{
   } catch {
     return { displayName: "Member", avatarUrl: null };
   }
+}
+
+/**
+ * Validates an untrusted IANA timezone name. The value is client-written, so an
+ * unusable or hostile string must never reach `Intl` formatting.
+ */
+function safeTimeZone(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const candidate = value.trim();
+  if (candidate.length === 0 || candidate.length > MAX_TIMEZONE_LENGTH) {
+    return null;
+  }
+  try {
+    new Intl.DateTimeFormat("de-DE", { timeZone: candidate });
+    return candidate;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Composes the notification's due line in the recipient's own timezone. The
+ * functions runtime runs in UTC, so without an explicit `timeZone` every device
+ * would be shown a UTC clock time.
+ */
+export function formatDueBody(
+  dueAtIso: unknown,
+  rrule: unknown,
+  timeZone: string
+): string {
+  const dueAt = typeof dueAtIso === "string" ? new Date(dueAtIso) : null;
+  if (!dueAt || Number.isNaN(dueAt.getTime())) return "Erinnerung fällig";
+
+  const dateFormatted = dueAt.toLocaleDateString("de-DE", {
+    day: "2-digit",
+    month: "2-digit",
+    timeZone,
+  });
+  const timeFormatted = dueAt.toLocaleTimeString("de-DE", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone,
+  });
+
+  let body = `Fällig am ${dateFormatted} um ${timeFormatted} Uhr`;
+  const schedule = typeof rrule === "string" ? rrule : "";
+  if (schedule.includes("FREQ=DAILY")) body += " • Täglich";
+  else if (schedule.includes("FREQ=WEEKLY")) body += " • Wöchentlich";
+  else if (schedule.includes("FREQ=MONTHLY")) body += " • Monatlich";
+  return body;
 }
 
 function generateInviteCode(): string {
@@ -277,72 +328,76 @@ export const notifyReminder = onDocumentCreated(
 
     if (targetMemberIds.length === 0) return;
 
-    // 2. Fetch FCM tokens for those members from users collection
-    const userDocs = await Promise.all(
-      targetMemberIds.map((id) => db.collection("users").doc(id).get())
-    );
+    // 2. Fetch FCM tokens for those members from the users collection, grouped
+    //    by each recipient's own timezone so the due time is rendered in local
+    //    time on every device. The creator's zone is the fallback for members
+    //    that have not reported one yet.
+    const [userDocs, creatorDoc] = await Promise.all([
+      Promise.all(
+        targetMemberIds.map((id) => db.collection("users").doc(id).get())
+      ),
+      createdBy ? db.collection("users").doc(createdBy).get() : null,
+    ]);
+    const fallbackTimeZone = safeTimeZone(creatorDoc?.data()?.timezone) ?? "UTC";
 
-    const fcmTokens: string[] = [];
+    const tokensByTimeZone = new Map<string, string[]>();
+    let tokenCount = 0;
     for (const doc of userDocs) {
-      const token = doc.data()?.fcm_token;
-      if (typeof token === "string" && token.trim().length > 0) {
-        fcmTokens.push(token.trim());
+      const data = doc.data();
+      const token = data?.fcm_token;
+      if (typeof token !== "string" || token.trim().length === 0) continue;
+      if (tokenCount >= MAX_PUSH_TOKENS) break;
+
+      const timeZone = safeTimeZone(data?.timezone) ?? fallbackTimeZone;
+      const bucket = tokensByTimeZone.get(timeZone) ?? [];
+      const trimmed = token.trim();
+      if (!bucket.includes(trimmed)) {
+        bucket.push(trimmed);
+        tokenCount += 1;
       }
+      tokensByTimeZone.set(timeZone, bucket);
     }
 
-    const uniqueTokens = [...new Set(fcmTokens)].slice(0, MAX_PUSH_TOKENS);
-    if (uniqueTokens.length === 0) return;
+    if (tokensByTimeZone.size === 0) return;
 
-    // 3. Format date and time trigger for notification body
-    let triggerBody = "Erinnerung fällig";
-    const dueAt =
-      typeof reminder.due_at === "string" ? new Date(reminder.due_at) : null;
-    if (dueAt && !Number.isNaN(dueAt.getTime())) {
-      const dateFormatted = dueAt.toLocaleDateString("de-DE", {
-        day: "2-digit",
-        month: "2-digit",
-      });
-      const timeFormatted = dueAt.toLocaleTimeString("de-DE", {
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-      triggerBody = `Fällig am ${dateFormatted} um ${timeFormatted} Uhr`;
-      const rrule = typeof reminder.rrule === "string" ? reminder.rrule : "";
-      if (rrule.includes("FREQ=DAILY")) triggerBody += " • Täglich";
-      else if (rrule.includes("FREQ=WEEKLY")) triggerBody += " • Wöchentlich";
-      else if (rrule.includes("FREQ=MONTHLY")) triggerBody += " • Monatlich";
-    }
+    const dueAtIso = typeof reminder.due_at === "string" ? reminder.due_at : "";
 
-    // 4. Send multicast notification natively via Firebase Admin
-    try {
-      const response = await getMessaging().sendEachForMulticast({
-        tokens: uniqueTokens,
-        notification: {
-          title: title,
-          body: triggerBody,
-        },
-        data: {
-          reminder_id: reminderId,
-          hivemind_id: hivemindId,
-          title: title,
-          notes: notes,
-          due_at: typeof reminder.due_at === "string" ? reminder.due_at : "",
-          click_action: "FLUTTER_NOTIFICATION_CLICK",
-        },
-        android: {
-          priority: "high",
-          notification: {
-            channelId: "hivemind_activity",
-            sound: "default",
-          },
-        },
-      });
+    // 3. One multicast per timezone, each with a locally formatted due time.
+    const dispatches = [...tokensByTimeZone.entries()].map(
+      async ([timeZone, tokens]) => {
+        const body = formatDueBody(dueAtIso, reminder.rrule, timeZone);
+        try {
+          const response = await getMessaging().sendEachForMulticast({
+            tokens,
+            notification: {
+              title: title,
+              body: body,
+            },
+            data: {
+              reminder_id: reminderId,
+              hivemind_id: hivemindId,
+              title: title,
+              notes: notes,
+              due_at: dueAtIso,
+              click_action: "FLUTTER_NOTIFICATION_CLICK",
+            },
+            android: {
+              priority: "high",
+              notification: {
+                channelId: "hivemind_activity",
+                sound: "default",
+              },
+            },
+          });
 
-      console.log(
-        `Successfully dispatched FCM reminder to ${response.successCount}/${uniqueTokens.length} devices`
-      );
-    } catch (err) {
-      console.error("Error sending multicast FCM notification:", err);
-    }
+          console.log(
+            `Dispatched "${body}" to ${response.successCount}/${tokens.length} devices in ${timeZone}`
+          );
+        } catch (err) {
+          console.error(`Error sending FCM reminder for ${timeZone}:`, err);
+        }
+      }
+    );
+    await Promise.all(dispatches);
   }
 );
