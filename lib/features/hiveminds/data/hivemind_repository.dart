@@ -1,6 +1,8 @@
 import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
 import '../domain/hivemind_member_model.dart';
 import '../domain/hivemind_model.dart';
 

@@ -22,79 +22,70 @@ void main() {
       expect(reminder.isCompletedByUser('user-charlie'), isFalse);
     });
 
-    test(
-      'isCompletedByUser and isFullyCompleted with scope: anyone (single person)',
-      () {
-        final incomplete = Reminder(
-          id: 'rem-anyone-1',
-          hivemindId: 'hive-1',
-          title: 'Müll rausbringen',
-          dueAt: now,
-          completionScope: ReminderCompletionScope.anyone,
-          completedByIds: const [],
-          createdAt: now,
-          updatedAt: now,
-        );
+    test('isCompletedByUser and isFullyCompleted with scope: anyone (single person)', () {
+      final incomplete = Reminder(
+        id: 'rem-anyone-1',
+        hivemindId: 'hive-1',
+        title: 'Müll rausbringen',
+        dueAt: now,
+        completionScope: ReminderCompletionScope.anyone,
+        completedByIds: const [],
+        createdAt: now,
+        updatedAt: now,
+      );
 
-        expect(incomplete.isCompletedByUser('user-alice'), isFalse);
-        expect(incomplete.isCompletedByUser('user-bob'), isFalse);
-        expect(
-          incomplete.isFullyCompleted({'user-alice', 'user-bob'}),
-          isFalse,
-        );
+      expect(incomplete.isCompletedByUser('user-alice'), isFalse);
+      expect(incomplete.isCompletedByUser('user-bob'), isFalse);
+      expect(incomplete.isFullyCompleted({'user-alice', 'user-bob'}), isFalse);
 
-        final completedByAlice = incomplete.copyWith(
-          isCompleted: true,
-          completedByIds: ['user-alice'],
-          completedBy: 'user-alice',
-        );
+      final completedByAlice = incomplete.copyWith(
+        isCompleted: true,
+        completedByIds: ['user-alice'],
+        completedBy: 'user-alice',
+      );
 
-        // Once Alice completes it, it is completed for all members!
-        expect(completedByAlice.isCompletedByUser('user-alice'), isTrue);
-        expect(completedByAlice.isCompletedByUser('user-bob'), isTrue);
-        expect(completedByAlice.isCompletedByUser('user-charlie'), isTrue);
-        expect(
-          completedByAlice.isFullyCompleted({'user-alice', 'user-bob'}),
-          isTrue,
-        );
-      },
-    );
+      // Once Alice completes it, it is completed for all members!
+      expect(completedByAlice.isCompletedByUser('user-alice'), isTrue);
+      expect(completedByAlice.isCompletedByUser('user-bob'), isTrue);
+      expect(completedByAlice.isCompletedByUser('user-charlie'), isTrue);
+      expect(
+        completedByAlice.isFullyCompleted({'user-alice', 'user-bob'}),
+        isTrue,
+      );
+    });
 
-    test(
-      'isCompletedByUser and isFullyCompleted with scope: assigned (specific member)',
-      () {
-        final assignedToBob = Reminder(
-          id: 'rem-assigned-1',
-          hivemindId: 'hive-1',
-          title: 'Paket abholen',
-          dueAt: now,
-          completionScope: ReminderCompletionScope.assigned,
-          assignedTo: 'user-bob',
-          completedByIds: const [],
-          createdAt: now,
-          updatedAt: now,
-        );
+    test('isCompletedByUser and isFullyCompleted with scope: assigned (specific member)', () {
+      final assignedToBob = Reminder(
+        id: 'rem-assigned-1',
+        hivemindId: 'hive-1',
+        title: 'Paket abholen',
+        dueAt: now,
+        completionScope: ReminderCompletionScope.assigned,
+        assignedTo: 'user-bob',
+        completedByIds: const [],
+        createdAt: now,
+        updatedAt: now,
+      );
 
-        expect(assignedToBob.isCompletedByUser('user-bob'), isFalse);
-        expect(
-          assignedToBob.isFullyCompleted({'user-alice', 'user-bob'}),
-          isFalse,
-        );
+      expect(assignedToBob.isCompletedByUser('user-bob'), isFalse);
+      expect(
+        assignedToBob.isFullyCompleted({'user-alice', 'user-bob'}),
+        isFalse,
+      );
 
-        final completedByBob = assignedToBob.copyWith(
-          isCompleted: true,
-          completedByIds: ['user-bob'],
-          completedBy: 'user-bob',
-        );
+      final completedByBob = assignedToBob.copyWith(
+        isCompleted: true,
+        completedByIds: ['user-bob'],
+        completedBy: 'user-bob',
+      );
 
-        expect(completedByBob.isCompletedByUser('user-bob'), isTrue);
-        expect(completedByBob.isCompletedByUser('user-alice'), isTrue);
-        expect(
-          completedByBob.isFullyCompleted({'user-alice', 'user-bob'}),
-          isTrue,
-        );
-      },
-    );
+      expect(completedByBob.isCompletedByUser('user-bob'), isTrue);
+      expect(completedByBob.isCompletedByUser('user-alice'), isTrue);
+      expect(
+        completedByBob.isFullyCompleted({'user-alice', 'user-bob'}),
+        isTrue,
+      );
+    });
 
     test('isCompletedByAll and isFullyCompleted with scope: all', () {
       final reminder = Reminder(

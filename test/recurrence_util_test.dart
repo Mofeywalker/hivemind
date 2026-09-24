@@ -137,57 +137,54 @@ void main() {
       expect(nextMon!.weekday, DateTime.monday);
     });
 
-    test(
-      'getReadableRecurrenceDescription formats correctly for German and English',
-      () {
-        const rruleMulti = 'RRULE:FREQ=WEEKLY;BYDAY=MO,TH';
-        expect(
-          RecurrenceUtil.getReadableRecurrenceDescription(
-            rruleMulti,
-            isGerman: true,
-          ),
-          'Jeden Mo, Do',
-        );
-        expect(
-          RecurrenceUtil.getReadableRecurrenceDescription(
-            rruleMulti,
-            isGerman: false,
-          ),
-          'Every Mon, Thu',
-        );
+    test('getReadableRecurrenceDescription formats correctly for German and English', () {
+      const rruleMulti = 'RRULE:FREQ=WEEKLY;BYDAY=MO,TH';
+      expect(
+        RecurrenceUtil.getReadableRecurrenceDescription(
+          rruleMulti,
+          isGerman: true,
+        ),
+        'Jeden Mo, Do',
+      );
+      expect(
+        RecurrenceUtil.getReadableRecurrenceDescription(
+          rruleMulti,
+          isGerman: false,
+        ),
+        'Every Mon, Thu',
+      );
 
-        const rruleWeekend = 'RRULE:FREQ=WEEKLY;BYDAY=SA,SU';
-        expect(
-          RecurrenceUtil.getReadableRecurrenceDescription(
-            rruleWeekend,
-            isGerman: true,
-          ),
-          'Sa, So',
-        );
-        expect(
-          RecurrenceUtil.getReadableRecurrenceDescription(
-            rruleWeekend,
-            isGerman: false,
-          ),
-          'Sat, Sun',
-        );
+      const rruleWeekend = 'RRULE:FREQ=WEEKLY;BYDAY=SA,SU';
+      expect(
+        RecurrenceUtil.getReadableRecurrenceDescription(
+          rruleWeekend,
+          isGerman: true,
+        ),
+        'Sa, So',
+      );
+      expect(
+        RecurrenceUtil.getReadableRecurrenceDescription(
+          rruleWeekend,
+          isGerman: false,
+        ),
+        'Sat, Sun',
+      );
 
-        const rruleSingle = 'RRULE:FREQ=WEEKLY;BYDAY=WE';
-        expect(
-          RecurrenceUtil.getReadableRecurrenceDescription(
-            rruleSingle,
-            isGerman: true,
-          ),
-          'Jeden Mittwoch',
-        );
-        expect(
-          RecurrenceUtil.getReadableRecurrenceDescription(
-            rruleSingle,
-            isGerman: false,
-          ),
-          'Every Wednesday',
-        );
-      },
-    );
+      const rruleSingle = 'RRULE:FREQ=WEEKLY;BYDAY=WE';
+      expect(
+        RecurrenceUtil.getReadableRecurrenceDescription(
+          rruleSingle,
+          isGerman: true,
+        ),
+        'Jeden Mittwoch',
+      );
+      expect(
+        RecurrenceUtil.getReadableRecurrenceDescription(
+          rruleSingle,
+          isGerman: false,
+        ),
+        'Every Wednesday',
+      );
+    });
   });
 }

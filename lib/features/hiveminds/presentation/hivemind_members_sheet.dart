@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../../../shared/widgets/minimal_button.dart';
@@ -212,9 +213,8 @@ class HivemindMembersSheet extends ConsumerWidget {
                       final initial = member.displayName.isNotEmpty
                           ? member.displayName.substring(0, 1).toUpperCase()
                           : '?';
-                      final joinedFormatted = DateFormat.yMMMd(
-                        locale,
-                      ).format(member.joinedAt);
+                      final joinedFormatted = DateFormat.yMMMd(locale)
+                          .format(member.joinedAt);
 
                       return Container(
                         padding: const EdgeInsets.symmetric(

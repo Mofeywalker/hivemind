@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../../../core/widgets/hivemind_logo.dart';
@@ -79,8 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
           if (e.code == 'user-not-found' || e.code == 'invalid-credential') {
             setState(() {
               _isSignUp = true;
-              _errorMessage =
-                  'Noch kein Konto gefunden. Bitte tippe auf "Konto erstellen", um dich zu registrieren.';
+              _errorMessage = 'Noch kein Konto gefunden. Bitte tippe auf "Konto erstellen", um dich zu registrieren.';
             });
             return;
           }

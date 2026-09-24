@@ -1,6 +1,8 @@
 import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+
 import '../../../core/providers/locale_provider.dart';
 import '../../../core/services/firebase_service.dart';
 import '../../hiveminds/providers/hivemind_provider.dart';
