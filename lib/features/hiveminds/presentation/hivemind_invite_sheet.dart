@@ -27,9 +27,15 @@ class HivemindInviteSheet extends StatelessWidget {
 
   void _shareInvite(BuildContext context) {
     final l10n = context.l10n;
-    Share.share(
-      l10n.shareInviteMessage(hivemind.name, hivemind.inviteCode, _deepLink),
-      subject: l10n.shareInviteSubject(hivemind.name),
+    SharePlus.instance.share(
+      ShareParams(
+        text: l10n.shareInviteMessage(
+          hivemind.name,
+          hivemind.inviteCode,
+          _deepLink,
+        ),
+        subject: l10n.shareInviteSubject(hivemind.name),
+      ),
     );
   }
 

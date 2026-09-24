@@ -41,7 +41,7 @@ class NotificationService {
 
     try {
       await _plugin.initialize(
-        initSettings,
+        settings: initSettings,
         onDidReceiveNotificationResponse: onNotificationTap,
       );
 
@@ -116,7 +116,13 @@ class NotificationService {
         iOS: darwinDetails,
       );
 
-      await _plugin.show(id, title, body, details, payload: payload);
+      await _plugin.show(
+        id: id,
+        title: title,
+        body: body,
+        notificationDetails: details,
+        payload: payload,
+      );
     } catch (e) {
       debugPrint('Error showing immediate notification #$id: $e');
     }
@@ -178,14 +184,12 @@ class NotificationService {
       }
 
       await _plugin.zonedSchedule(
-        id,
-        title,
-        body,
-        tzScheduled,
-        details,
+        id: id,
+        title: title,
+        body: body,
+        scheduledDate: tzScheduled,
+        notificationDetails: details,
         androidScheduleMode: scheduleMode,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
         payload: payload,
       );
     } catch (e) {
@@ -221,7 +225,7 @@ class NotificationService {
 
   static Future<void> cancelReminder(int id) async {
     try {
-      await _plugin.cancel(id);
+      await _plugin.cancel(id: id);
     } catch (e) {
       debugPrint('Error cancelling notification #$id: $e');
     }

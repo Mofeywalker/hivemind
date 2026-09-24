@@ -9,7 +9,7 @@ import '../domain/reminder_model.dart';
 class ReminderRepository {
   final FirebaseFirestore _firestore;
   final FirebaseAuth _auth;
-  final Locale? Function()? _localeGetter;
+  final Locale? Function()? localeGetter;
 
   // In-memory cache of scheduled reminder IDs and their target timestamps
   // Prevents redundant platform-channel invocations on every list refresh or stream event
@@ -19,14 +19,13 @@ class ReminderRepository {
   ReminderRepository({
     FirebaseFirestore? firestore,
     FirebaseAuth? auth,
-    Locale? Function()? localeGetter,
+    this.localeGetter,
   }) : _firestore = firestore ?? FirebaseFirestore.instance,
-       _auth = auth ?? FirebaseAuth.instance,
-       _localeGetter = localeGetter;
+       _auth = auth ?? FirebaseAuth.instance;
 
   String _getLocalizedDueBody() {
     try {
-      final preferred = _localeGetter?.call();
+      final preferred = localeGetter?.call();
       final locale =
           preferred ?? WidgetsBinding.instance.platformDispatcher.locale;
       final l10n = lookupAppLocalizations(locale);
