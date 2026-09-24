@@ -327,8 +327,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get inviteCodeCopied => 'Invite code copied to clipboard!';
 
   @override
-  String shareInviteMessage(String name, String code, String link) {
-    return 'Join my Hivemind \"$name\" to share reminders! Use code: $code or open: $link';
+  String shareInviteMessage(String name, String code) {
+    return 'Join my Hivemind \"$name\" to share reminders! Open the app, tap \"Join\" and enter code: $code';
   }
 
   @override
@@ -337,7 +337,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get shareLink => 'Share Link';
+  String get shareLink => 'Share Invite';
 
   @override
   String get copyCode => 'Copy Code';

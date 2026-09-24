@@ -2,19 +2,44 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/providers/locale_provider.dart';
 import '../../../core/providers/theme_provider.dart';
+import '../../../core/services/fcm_service.dart';
+import '../../../core/services/notification_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../../../shared/widgets/card_container.dart';
 import '../../../shared/widgets/minimal_button.dart';
+import '../../hiveminds/providers/hivemind_provider.dart';
+import '../../reminders/providers/reminder_provider.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
-  Future<void> _handleSignOut(BuildContext context) async {
+  /// Clears every trace of the signed-out account from the device: the push
+  /// token is revoked while the session still exists, local notifications and
+  /// cached state are dropped afterwards so no provider can refetch the
+  /// departing account's data.
+  Future<void> _handleSignOut(WidgetRef ref, BuildContext context) async {
+    await FcmService.revokeToken();
+    await NotificationService.cancelAll();
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('emailForSignIn');
+      await prefs.remove('last_active_hivemind_id');
+    } catch (_) {
+      // Preferences are best-effort; never block sign-out on them.
+    }
+
     await FirebaseAuth.instance.signOut();
+
+    ref.read(activeHivemindProvider.notifier).clear();
+    ref.invalidate(joinedHivemindsProvider);
+    ref.invalidate(remindersProvider);
+
     if (context.mounted) {
       context.go('/login');
     }
@@ -241,7 +266,7 @@ class ProfileScreen extends ConsumerWidget {
                   size: 18,
                   color: AppColors.error,
                 ),
-                onPressed: () => _handleSignOut(context),
+                onPressed: () => _handleSignOut(ref, context),
               ),
               const SizedBox(height: 16),
             ],

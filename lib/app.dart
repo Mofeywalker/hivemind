@@ -77,13 +77,9 @@ class _HivemindAppState extends ConsumerState<HivemindApp> {
         final prefs = await SharedPreferences.getInstance();
         var email = prefs.getString('emailForSignIn');
 
-        // Fallback 1: check if email was passed in link query parameters
-        if (email == null || email.isEmpty) {
-          final uri = Uri.tryParse(link);
-          email = uri?.queryParameters['email'];
-        }
-
-        // Fallback 2: prompt user to confirm their email if missing after fresh installation
+        // Fallback: prompt the user to confirm their address if the pending
+        // sign-in email is gone (fresh install). The link's own query parameters
+        // are attacker-controlled and are deliberately not trusted here.
         if (email == null || email.isEmpty) {
           final navContext = AppRouter.navigatorKey.currentContext;
           if (navContext != null && navContext.mounted) {

@@ -1,56 +1,122 @@
 rules_version = '2';
+
+// Trust model
+// -----------
+// The client is untrusted. Membership is never asserted by a client write:
+// `createHivemind` / `joinHivemind` in functions/src/index.ts are the only paths
+// that may add a uid to hiveminds/{id}.member_ids, and they run with the Admin
+// SDK (rules are bypassed there). Invite codes are therefore a server-verified
+// secret and are not readable by non-members.
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Helper functions
-    function isAuthenticated() {
+    function isSignedIn() {
       return request.auth != null;
     }
 
     function isMemberOf(hivemindId) {
-      return isAuthenticated() &&
-        request.auth.uid in get(/databases/$(database)/documents/hiveminds/$(hivemindId)).data.member_ids;
+      return isSignedIn() && exists(
+        /databases/$(database)/documents/hiveminds/$(hivemindId)/members/$(request.auth.uid)
+      );
     }
 
-    // User Profiles & FCM Tokens
+    function changedKeysAre(fields) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(fields);
+    }
+
+    // User Profiles & FCM Tokens: private to their owner.
     match /users/{userId} {
-      allow read: if isAuthenticated();
-      allow write: if isAuthenticated() && request.auth.uid == userId;
+      allow get: if isSignedIn() && request.auth.uid == userId;
+
+      allow create, update: if isSignedIn() && request.auth.uid == userId &&
+        request.resource.data.keys().hasOnly(
+          ['display_name', 'email', 'avatar_url', 'fcm_token', 'created_at', 'updated_at']
+        ) &&
+        request.resource.data.get('email', '') is string &&
+        request.resource.data.get('email', '').size() <= 254 &&
+        request.resource.data.get('display_name', '') is string &&
+        request.resource.data.get('display_name', '').size() <= 80 &&
+        request.resource.data.get('avatar_url', '') is string &&
+        request.resource.data.get('avatar_url', '').size() <= 2048 &&
+        request.resource.data.get('fcm_token', '') is string &&
+        request.resource.data.get('fcm_token', '').size() <= 4096;
+
+      allow list, delete: if false;
     }
 
     // Hiveminds (Circles/Groups)
     match /hiveminds/{hivemindId} {
-      // Anyone authenticated can query to find a Hivemind by invite_code, or read if they are a member
-      allow read: if isAuthenticated();
+      // Members only: no collection enumeration, no invite_code disclosure.
+      allow get: if isMemberOf(hivemindId);
+      allow list: if isSignedIn() && request.auth.uid in resource.data.member_ids;
 
-      // Any authenticated user can create a Hivemind
-      allow create: if isAuthenticated() &&
-        request.resource.data.created_by == request.auth.uid &&
-        request.auth.uid in request.resource.data.member_ids;
+      // Creation goes through the createHivemind callable (server-generated,
+      // unique invite code). Deletion is not implemented client-side.
+      allow create, delete: if false;
 
-      // Members can update Hivemind details or join via member_ids
-      allow update: if isAuthenticated() && (
-        request.auth.uid in resource.data.member_ids ||
-        request.auth.uid in request.resource.data.member_ids
-      );
+      // Renaming only. member_ids / invite_code / created_by / created_at are
+      // immutable for clients, so nobody can join by rewriting membership and
+      // nobody can rotate the code to lock members out or hijack a group.
+      allow update: if isMemberOf(hivemindId) &&
+        changedKeysAre(['name', 'description', 'icon', 'updated_at']) &&
+        request.resource.data.name is string &&
+        request.resource.data.name.size() >= 1 &&
+        request.resource.data.name.size() <= 60 &&
+        (request.resource.data.get('description', null) == null ||
+          (request.resource.data.description is string &&
+            request.resource.data.description.size() <= 300)) &&
+        request.resource.data.icon is string &&
+        request.resource.data.icon.size() <= 8;
 
-      // Members Subcollection
+      // Members Subcollection: readable by members, written only by the
+      // joinHivemind / createHivemind callables (role is never client-set).
       match /members/{memberId} {
-        allow read: if isAuthenticated();
-        allow write: if isAuthenticated() && (
-          request.auth.uid == memberId ||
-          request.auth.uid in get(/databases/$(database)/documents/hiveminds/$(hivemindId)).data.member_ids
-        );
+        allow get, list: if isMemberOf(hivemindId);
+        allow write: if false;
       }
     }
 
     // Reminders
     match /reminders/{reminderId} {
-      allow read, update, delete: if isAuthenticated() &&
+      function reminderKeys() {
+        return [
+          'id', 'hivemind_id', 'title', 'notes', 'due_at', 'rrule',
+          'is_completed', 'completed_at', 'completed_by', 'completed_by_ids',
+          'created_by', 'completion_scope', 'assigned_to', 'created_at', 'updated_at'
+        ];
+      }
+
+      function reminderFieldsAreValid() {
+        return request.resource.data.title is string &&
+          request.resource.data.title.size() >= 1 &&
+          request.resource.data.title.size() <= 200 &&
+          (request.resource.data.get('notes', null) == null ||
+            (request.resource.data.notes is string &&
+              request.resource.data.notes.size() <= 2000)) &&
+          request.resource.data.get('hivemind_id', '') is string &&
+          request.resource.data.get('hivemind_id', '').size() > 0;
+      }
+
+      allow get, list, delete: if isSignedIn() &&
         isMemberOf(resource.data.hivemind_id);
 
-      allow create: if isAuthenticated() &&
-        isMemberOf(request.resource.data.hivemind_id);
+      allow create: if isSignedIn() &&
+        isMemberOf(request.resource.data.hivemind_id) &&
+        request.resource.data.created_by == request.auth.uid &&
+        request.resource.data.keys().hasOnly(reminderKeys()) &&
+        reminderFieldsAreValid();
+
+      // A reminder can never be moved between hiveminds or re-attributed:
+      // both would let a member of one group inject content (and push
+      // notifications) into another group.
+      allow update: if isSignedIn() &&
+        isMemberOf(resource.data.hivemind_id) &&
+        changedKeysAre([
+          'title', 'notes', 'due_at', 'rrule', 'updated_at',
+          'completion_scope', 'assigned_to', 'is_completed', 'completed_at',
+          'completed_by', 'completed_by_ids'
+        ]) &&
+        reminderFieldsAreValid();
     }
   }
 }

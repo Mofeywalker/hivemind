@@ -105,9 +105,9 @@
   "inviteToHivemind": "Zu {name} einladen",
   "inviteSheetSubtitle": "Teile diesen QR-Code oder den 6-stelligen Code mit Personen, mit denen du zusammenarbeiten möchtest.",
   "inviteCodeCopied": "Einladungscode in die Zwischenablage kopiert!",
-  "shareInviteMessage": "Tritt meinem Hivemind \"{name}\" bei, um gemeinsame Erinnerungen zu teilen! Nutze den Code: {code} oder öffne: {link}",
+  "shareInviteMessage": "Tritt meinem Hivemind \"{name}\" bei, um gemeinsame Erinnerungen zu teilen! Öffne die App, tippe auf „Beitreten“ und gib den Code ein: {code}",
   "shareInviteSubject": "Hivemind \"{name}\" beitreten",
-  "shareLink": "Link teilen",
+  "shareLink": "Einladung teilen",
   "copyCode": "Code kopieren",
 
   "scanHivemindQr": "Hivemind-QR-Code scannen",

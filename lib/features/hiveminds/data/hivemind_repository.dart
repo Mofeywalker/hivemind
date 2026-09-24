@@ -1,18 +1,27 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../domain/hivemind_member_model.dart';
 import '../domain/hivemind_model.dart';
 
+/// Membership is server-authoritative. [createHivemind] and [joinByInviteCode]
+/// call the Cloud Functions in functions/src/index.ts, which are the only code
+/// paths permitted to write `member_ids` (firestore.rules denies every client
+/// write of membership). Invite codes are generated, uniquely allocated and
+/// verified server-side; they are never readable by non-members.
 class HivemindRepository {
   final FirebaseFirestore _firestore;
   final FirebaseAuth _auth;
+  final FirebaseFunctions _functions;
 
-  HivemindRepository({FirebaseFirestore? firestore, FirebaseAuth? auth})
-    : _firestore = firestore ?? FirebaseFirestore.instance,
-      _auth = auth ?? FirebaseAuth.instance;
+  HivemindRepository({
+    FirebaseFirestore? firestore,
+    FirebaseAuth? auth,
+    FirebaseFunctions? functions,
+  }) : _firestore = firestore ?? FirebaseFirestore.instance,
+       _auth = auth ?? FirebaseAuth.instance,
+       _functions = functions ?? FirebaseFunctions.instance;
 
   Future<List<Hivemind>> getJoinedHiveminds() async {
     final userId = _auth.currentUser?.uid;
@@ -34,98 +43,34 @@ class HivemindRepository {
     String? description,
     String icon = '🐝',
   }) async {
-    final userId = _auth.currentUser?.uid;
-    if (userId == null) {
+    if (_auth.currentUser == null) {
       throw Exception('Must be logged in to create a Hivemind');
     }
 
-    final inviteCode = _generateShortCode();
-    final docRef = _firestore.collection('hiveminds').doc();
-    final hivemindId = docRef.id;
-    final nowIso = DateTime.now().toUtc().toIso8601String();
-
-    final hivemindMap = {
-      'id': hivemindId,
+    final result = await _functions.httpsCallable('createHivemind').call({
       'name': name.trim(),
       'description': description?.trim(),
       'icon': icon,
-      'invite_code': inviteCode,
-      'created_by': userId,
-      'member_ids': [userId],
-      'created_at': nowIso,
-    };
+    });
 
-    final user = _auth.currentUser;
-    final memberMap = {
-      'user_id': userId,
-      'hivemind_id': hivemindId,
-      'role': 'owner',
-      'display_name':
-          user?.displayName ?? user?.email?.split('@').first ?? 'Member',
-      'avatar_url': user?.photoURL,
-      'joined_at': nowIso,
-    };
-
-    final batch = _firestore.batch();
-    batch.set(docRef, hivemindMap);
-    batch.set(docRef.collection('members').doc(userId), memberMap);
-    await batch.commit();
-
-    return Hivemind.fromJson(hivemindMap);
+    return Hivemind.fromJson(_asHivemindJson(result.data));
   }
 
   Future<Hivemind> joinByInviteCode(String inviteCode) async {
-    final userId = _auth.currentUser?.uid;
-    if (userId == null) throw Exception('Must be logged in to join a Hivemind');
-
-    final cleanCode = inviteCode.trim().toUpperCase();
-
-    final query = await _firestore
-        .collection('hiveminds')
-        .where('invite_code', isEqualTo: cleanCode)
-        .limit(1)
-        .get();
-
-    if (query.docs.isEmpty) {
-      throw Exception('Invalid invite code. No Hivemind found.');
+    if (_auth.currentUser == null) {
+      throw Exception('Must be logged in to join a Hivemind');
     }
 
-    final doc = query.docs.first;
-    final hivemindId = doc.id;
-    final user = _auth.currentUser;
-    final nowIso = DateTime.now().toUtc().toIso8601String();
-
-    final memberMap = {
-      'user_id': userId,
-      'hivemind_id': hivemindId,
-      'role': 'member',
-      'display_name':
-          user?.displayName ?? user?.email?.split('@').first ?? 'Member',
-      'avatar_url': user?.photoURL,
-      'joined_at': nowIso,
-    };
-
-    final batch = _firestore.batch();
-    batch.update(doc.reference, {
-      'member_ids': FieldValue.arrayUnion([userId]),
+    final result = await _functions.httpsCallable('joinHivemind').call({
+      'invite_code': inviteCode.trim().toUpperCase(),
     });
-    batch.set(
-      doc.reference.collection('members').doc(userId),
-      memberMap,
-      SetOptions(merge: true),
-    );
-    await batch.commit();
 
-    return Hivemind.fromJson({...doc.data(), 'id': hivemindId});
+    return Hivemind.fromJson(_asHivemindJson(result.data));
   }
 
-  String _generateShortCode() {
-    const chars =
-        'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // omit easily confused 0, O, 1, I
-    final rnd = Random();
-    return String.fromCharCodes(
-      Iterable.generate(6, (_) => chars.codeUnitAt(rnd.nextInt(chars.length))),
-    );
+  static Map<String, dynamic> _asHivemindJson(Object? data) {
+    if (data is Map) return Map<String, dynamic>.from(data);
+    throw Exception('Unexpected response from Hivemind server');
   }
 
   Future<List<HivemindMember>> getHivemindMembers(String hivemindId) async {

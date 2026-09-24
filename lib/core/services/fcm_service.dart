@@ -37,7 +37,6 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
           scheduledDate: dueAt,
           payload: reminderId.toString(),
         );
-        debugPrint('Scheduled background reminder #$reminderId for $dueAt');
       }
     }
   } catch (e) {
@@ -101,14 +100,10 @@ class FcmService {
       await syncCurrentToken();
 
       // Listen for token updates
-      messaging.onTokenRefresh.listen((newToken) {
-        debugPrint('FCM Token refreshed: $newToken');
-        syncTokenToFirestore(newToken);
-      });
+      messaging.onTokenRefresh.listen(syncTokenToFirestore);
 
       // Handle messages received while app is in foreground
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        debugPrint('FCM Foreground message received: ${message.data}');
         final notification = message.notification;
         final data = message.data;
 
@@ -134,14 +129,12 @@ class FcmService {
               scheduledDate: dueAt,
               payload: reminderId.toString(),
             );
-            debugPrint('Scheduled foreground reminder #$reminderId for $dueAt');
           }
         }
       });
 
       // Handle notification interaction when app is in background
       FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-        debugPrint('FCM notification opened app: ${message.data}');
         final reminderId = message.data['reminder_id'] ?? message.data['id'];
         if (reminderId != null && onReminderTap != null) {
           onReminderTap(reminderId.toString());
@@ -151,7 +144,6 @@ class FcmService {
       // Handle launch from terminated state
       final initialMessage = await messaging.getInitialMessage();
       if (initialMessage != null) {
-        debugPrint('FCM initial message on app launch: ${initialMessage.data}');
         final reminderId =
             initialMessage.data['reminder_id'] ?? initialMessage.data['id'];
         if (reminderId != null && onReminderTap != null) {
@@ -174,7 +166,6 @@ class FcmService {
     try {
       final token = await FirebaseMessaging.instance.getToken();
       if (token != null) {
-        debugPrint('FCM Token retrieved: $token');
         await syncTokenToFirestore(token);
       }
     } catch (e) {
@@ -193,9 +184,33 @@ class FcmService {
         'updated_at': DateTime.now().toUtc().toIso8601String(),
       }, SetOptions(merge: true));
 
-      debugPrint('Synced FCM token for user ${user.uid} to Firestore');
+      debugPrint('Synced FCM token to Firestore');
     } catch (e) {
       debugPrint('Error syncing FCM token to Firestore: $e');
+    }
+  }
+
+  /// Revokes this device's push token and removes it from the user document.
+  /// Called on sign-out so a device that is no longer logged in stops receiving
+  /// the account's reminder notifications.
+  static Future<void> revokeToken() async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    try {
+      await FirebaseMessaging.instance.deleteToken();
+    } catch (e) {
+      debugPrint('Error deleting FCM token: $e');
+    }
+
+    if (user == null) return;
+
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+        'fcm_token': FieldValue.delete(),
+        'updated_at': DateTime.now().toUtc().toIso8601String(),
+      }, SetOptions(merge: true));
+    } catch (e) {
+      debugPrint('Error clearing stored FCM token: $e');
     }
   }
 }

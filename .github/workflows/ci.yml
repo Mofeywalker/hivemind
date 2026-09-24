@@ -114,7 +114,10 @@ jobs:
             echo "Decoding release keystore from secret..."
             echo "$KEYSTORE_BASE64" | base64 -d > android/app/upload-keystore.jks
           else
-            echo "::warning ::ANDROID_KEYSTORE_BASE64 secret not configured. Build will fall back to debug key."
+            # Gradle refuses to build a release variant without a keystore unless
+            # this is set explicitly, so the artifact is never silently debug-signed.
+            echo "::warning ::ANDROID_KEYSTORE_BASE64 secret not configured. Building a DEBUG-signed release artifact."
+            echo "HIVEMIND_ALLOW_DEBUG_SIGNING=true" >> "$GITHUB_ENV"
           fi
 
       - name: Build Android Release APK

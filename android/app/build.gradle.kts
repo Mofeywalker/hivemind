@@ -72,10 +72,21 @@ android {
     buildTypes {
         release {
             val releaseSigning = signingConfigs.getByName("release")
-            signingConfig = if (releaseSigning.storeFile != null) {
-                releaseSigning
-            } else {
-                signingConfigs.getByName("debug")
+            when {
+                releaseSigning.storeFile != null -> signingConfig = releaseSigning
+                System.getenv("HIVEMIND_ALLOW_DEBUG_SIGNING") == "true" -> {
+                    logger.warn(
+                        "WARNING: building a release variant signed with the DEBUG key. " +
+                            "This artifact is not publishable. " +
+                            "Provide ANDROID_KEYSTORE_PATH / key.properties to sign properly."
+                    )
+                    signingConfig = signingConfigs.getByName("debug")
+                }
+                else -> throw GradleException(
+                    "No release keystore configured. Provide ANDROID_KEYSTORE_PATH / " +
+                        "key.properties, or set HIVEMIND_ALLOW_DEBUG_SIGNING=true to " +
+                        "build an explicitly debug-signed release."
+                )
             }
         }
     }

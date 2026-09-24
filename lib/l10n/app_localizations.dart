@@ -677,8 +677,8 @@ abstract class AppLocalizations {
   /// Share text for hivemind invite
   ///
   /// In en, this message translates to:
-  /// **'Join my Hivemind \"{name}\" to share reminders! Use code: {code} or open: {link}'**
-  String shareInviteMessage(String name, String code, String link);
+  /// **'Join my Hivemind \"{name}\" to share reminders! Open the app, tap \"Join\" and enter code: {code}'**
+  String shareInviteMessage(String name, String code);
 
   /// Share subject line
   ///
@@ -686,10 +686,10 @@ abstract class AppLocalizations {
   /// **'Join Hivemind \"{name}\"'**
   String shareInviteSubject(String name);
 
-  /// Button to share link
+  /// Button to share the invite code
   ///
   /// In en, this message translates to:
-  /// **'Share Link'**
+  /// **'Share Invite'**
   String get shareLink;
 
   /// Button to copy invite code

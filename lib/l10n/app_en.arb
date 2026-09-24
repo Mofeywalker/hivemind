@@ -448,7 +448,7 @@
   "@inviteCodeCopied": {
     "description": "Snackbar message when invite code is copied"
   },
-  "shareInviteMessage": "Join my Hivemind \"{name}\" to share reminders! Use code: {code} or open: {link}",
+  "shareInviteMessage": "Join my Hivemind \"{name}\" to share reminders! Open the app, tap \"Join\" and enter code: {code}",
   "@shareInviteMessage": {
     "description": "Share text for hivemind invite",
     "placeholders": {
@@ -456,9 +456,6 @@
         "type": "String"
       },
       "code": {
-        "type": "String"
-      },
-      "link": {
         "type": "String"
       }
     }
@@ -472,9 +469,9 @@
       }
     }
   },
-  "shareLink": "Share Link",
+  "shareLink": "Share Invite",
   "@shareLink": {
-    "description": "Button to share link"
+    "description": "Button to share the invite code"
   },
   "copyCode": "Copy Code",
   "@copyCode": {

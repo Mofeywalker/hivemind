@@ -37,6 +37,7 @@
 - [CI/CD Pipeline](#-cicd-pipeline)
   - [GitHub Actions Workflow](#github-actions-workflow)
   - [Configuring CI Secrets](#configuring-ci-secrets)
+- [Security Model & Deployment](#-security-model--deployment)
 - [Localization (i18n)](#-localization-i18n)
 - [License](#-license)
 
@@ -44,7 +45,7 @@
 
 ## 🐝 About Hivemind
 
-**Hivemind** is a modern Flutter application designed for shared spaces ("Hiveminds") and collaborative task management. Whether for households, couples, or teams, Hivemind keeps everyone in sync with real-time Firestore updates, rich recurrence schedules, push notifications, and seamless QR-code/deep-link invitations.
+**Hivemind** is a modern Flutter application designed for shared spaces ("Hiveminds") and collaborative task management. Whether for households, couples, or teams, Hivemind keeps everyone in sync with real-time Firestore updates, rich recurrence schedules, push notifications, and seamless QR-code/invite-code invitations.
 
 ---
 
@@ -60,7 +61,7 @@
   - Robust timezone translation (`timezone`, `flutter_timezone`).
   - Remote push notifications via Firebase Cloud Messaging (FCM).
 - **Instant Invitations & Onboarding:**
-  - Shareable deep links via Universal Links / App Links (`app_links`).
+  - Server-verified 6-character invite codes, shareable as text or QR code.
   - Built-in QR Code Generator (`qr_flutter`) and integrated Camera Scanner (`mobile_scanner`).
 - **Dynamic Theming & Localization:**
   - Polished Light and Dark modes with custom honey/amber branding (`HivemindAppTheme`).
@@ -222,6 +223,40 @@ To enable builds with your production Firebase configuration in GitHub Actions:
    - **Value:** Paste the content of your `android/app/google-services.json` (as raw JSON or Base64 encoded).
 
 > **Note:** If `GOOGLE_SERVICES_JSON` is not provided (e.g. pull requests from external forks), the CI automatically injects a placeholder manifest to ensure that compilation tests still pass without failing.
+
+The release build is signed with the keystore supplied by the `ANDROID_KEYSTORE_BASE64` / `ANDROID_KEYSTORE_PASSWORD` / `ANDROID_KEY_ALIAS` / `ANDROID_KEY_PASSWORD` secrets. If no keystore is configured, Gradle refuses to build a release variant unless `HIVEMIND_ALLOW_DEBUG_SIGNING=true` is set explicitly (CI sets it only for the placeholder path above), so a debug-signed artifact is never produced silently.
+
+---
+
+## 🔐 Security Model & Deployment
+
+The client is untrusted and holds no authority over membership:
+
+- **Membership is server-authoritative.** `createHivemind` and `joinHivemind` in [`functions/src/index.ts`](functions/src/index.ts) are the only code paths allowed to write `hiveminds/{id}.member_ids`. [`firestore.rules`](firestore.rules) denies every client write of membership, so an invite code cannot be bypassed by editing the document.
+- **Invite codes** are generated server-side with a CSPRNG, checked for uniqueness, and are readable only by members of that hivemind. The QR code and share sheet carry the 6-character code itself (scanned codes are still accepted from the legacy `hivemind://join?code=…` format).
+- **User profiles** (`users/{uid}`, including `fcm_token` and email) are readable and writable only by their owner.
+- **Reminders** cannot be moved between hiveminds or re-attributed, and `title`/`notes` are length-bounded before they reach FCM.
+- **App Check** is enforced on both callables (`enforceAppCheck: true`) and attestation is initialized in `FirebaseService`.
+- **Sign-out** revokes the device push token, clears scheduled local notifications and drops cached hivemind state.
+
+### Required console setup
+1. **App Check:** register the Android/iOS apps under *Firebase Console → App Check → Apps*. Development builds use the debug providers — add their tokens under *App Check → Apps → Manage debug tokens*. Calls fail with `failed-precondition` until the apps are registered.
+2. Optionally enable App Check enforcement for Cloud Firestore in the same console section (rules cannot enforce it themselves).
+3. **App Links:** [`public/.well-known/assetlinks.json`](public/.well-known/assetlinks.json) must list the **release** signing fingerprint only. The Android debug key is public knowledge, so publishing its fingerprint would let a third party sign an APK that claims the `hivemind-236c0.firebaseapp.com` App Link and intercept magic-link sign-in codes.
+
+### Deployment order for trust-boundary changes
+
+```bash
+# 1. Ship the callables the new rules depend on
+firebase deploy --only functions
+
+# 2. Close the client-side membership hole
+firebase deploy --only firestore:rules
+```
+
+Then release the app. Note that apps installed before this change create and join hiveminds by writing `member_ids` directly; once the new rules are live those writes are denied, so those clients must be updated to join through the callables.
+
+---
 
 ---
 

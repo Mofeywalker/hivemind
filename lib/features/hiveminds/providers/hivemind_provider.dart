@@ -89,4 +89,11 @@ class ActiveHivemindNotifier extends StateNotifier<Hivemind?> {
       state = null;
     }
   }
+
+  /// Drops the cached selection without touching the backend. Used on sign-out
+  /// so the next account never sees the previous account's active hivemind.
+  void clear() {
+    state = null;
+    _ref.invalidate(joinedHivemindsProvider);
+  }
 }

@@ -13,8 +13,6 @@ class HivemindInviteSheet extends StatelessWidget {
 
   const HivemindInviteSheet({super.key, required this.hivemind});
 
-  String get _deepLink => 'hivemind://join?code=${hivemind.inviteCode}';
-
   void _copyCode(BuildContext context) {
     Clipboard.setData(ClipboardData(text: hivemind.inviteCode));
     HapticFeedback.lightImpact();
@@ -30,11 +28,7 @@ class HivemindInviteSheet extends StatelessWidget {
     final l10n = context.l10n;
     SharePlus.instance.share(
       ShareParams(
-        text: l10n.shareInviteMessage(
-          hivemind.name,
-          hivemind.inviteCode,
-          _deepLink,
-        ),
+        text: l10n.shareInviteMessage(hivemind.name, hivemind.inviteCode),
         subject: l10n.shareInviteSubject(hivemind.name),
       ),
     );
@@ -89,7 +83,7 @@ class HivemindInviteSheet extends StatelessWidget {
               ],
             ),
             child: QrImageView(
-              data: _deepLink,
+              data: hivemind.inviteCode,
               version: QrVersions.auto,
               size: 180.0,
               eyeStyle: const QrEyeStyle(
