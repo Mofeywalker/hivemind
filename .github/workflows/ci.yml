@@ -37,7 +37,7 @@ jobs:
         run: flutter test
 
   build-android:
-    name: Build Android (Debug & Release)
+    name: Build Android Release
     needs: [lint-and-test]
     runs-on: ubuntu-latest
     steps:
@@ -117,24 +117,13 @@ jobs:
             echo "::warning ::ANDROID_KEYSTORE_BASE64 secret not configured. Build will fall back to debug key."
           fi
 
-      - name: Build Android Debug APK
-        run: flutter build apk --debug
-
       - name: Build Android Release APK
         env:
           ANDROID_KEYSTORE_PATH: upload-keystore.jks
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-        run: flutter build apk --release
-
-      - name: Upload Debug APK Artifact
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: app-debug-apk
-          path: build/app/outputs/flutter-apk/app-debug.apk
-          if-no-files-found: error
-          retention-days: 14
+        run: flutter build apk --release --build-number=${{ github.run_number }}
 
       - name: Prepare hivemind-release.apk
         run: |
@@ -148,12 +137,28 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+      - name: Generate Unique Release Metadata
+        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') && github.event_name != 'pull_request'
+        id: release_info
+        run: |
+          RELEASE_DATE=$(date -u +'%Y.%m.%d')
+          if [ "${{ github.run_attempt }}" -gt 1 ]; then
+            TAG="v${RELEASE_DATE}-${{ github.run_number }}.${{ github.run_attempt }}"
+            TITLE="Release ${RELEASE_DATE} (#${{ github.run_number }}.${{ github.run_attempt }})"
+          else
+            TAG="v${RELEASE_DATE}-${{ github.run_number }}"
+            TITLE="Release ${RELEASE_DATE} (#${{ github.run_number }})"
+          fi
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "title=${TITLE}" >> "$GITHUB_OUTPUT"
+
       - name: Publish Release APK to GitHub Releases
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') && github.event_name != 'pull_request'
         uses: softprops/action-gh-release@c95fe1489396fe8a9eb87c0abf8aa5b2ef267fda # v2.2.1
         with:
-          tag_name: latest
-          name: Latest Release
+          tag_name: ${{ steps.release_info.outputs.tag }}
+          name: ${{ steps.release_info.outputs.title }}
           draft: false
           prerelease: false
+          generate_release_notes: true
           files: build/app/outputs/flutter-apk/hivemind-release.apk

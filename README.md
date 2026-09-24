@@ -210,7 +210,7 @@ The project includes an enterprise-ready continuous integration and delivery pip
   - `subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2` (`v2.23.0`, stable + cache)
   - `actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a` (`v7.0.1`)
 - **Automated Quality Checks:** Formats, analyzes, and tests Dart code.
-- **Automated Builds:** Compiles both **Debug** and **Release APKs** along with the **Release AppBundle** and uploads them as downloadable GitHub Artifacts.
+- **Automated Builds:** Compiles the **Release APK** with an incrementing build number and publishes uniquely tagged releases to GitHub Releases.
 
 ### Configuring CI Secrets
 
