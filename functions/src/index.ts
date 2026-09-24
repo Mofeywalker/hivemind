@@ -1,12 +1,14 @@
-import * as admin from "firebase-admin";
-import { FieldValue } from "firebase-admin/firestore";
 import { randomInt } from "crypto";
+import { initializeApp } from "firebase-admin/app";
+import { getAuth } from "firebase-admin/auth";
+import { FieldValue, getFirestore } from "firebase-admin/firestore";
+import { getMessaging } from "firebase-admin/messaging";
 import { onDocumentCreated } from "firebase-functions/v2/firestore";
 import { HttpsError, onCall } from "firebase-functions/v2/https";
 
-admin.initializeApp();
+initializeApp();
 
-const db = admin.firestore();
+const db = getFirestore();
 
 /**
  * Security model
@@ -73,7 +75,7 @@ async function displayNameFor(uid: string): Promise<{
   avatarUrl: string | null;
 }> {
   try {
-    const record = await admin.auth().getUser(uid);
+    const record = await getAuth().getUser(uid);
     return {
       displayName:
         record.displayName || record.email?.split("@")[0] || "Member",
@@ -313,7 +315,7 @@ export const notifyReminder = onDocumentCreated(
 
     // 4. Send multicast notification natively via Firebase Admin
     try {
-      const response = await admin.messaging().sendEachForMulticast({
+      const response = await getMessaging().sendEachForMulticast({
         tokens: uniqueTokens,
         notification: {
           title: title,
