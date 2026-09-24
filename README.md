@@ -250,7 +250,11 @@ The client is untrusted and holds no authority over membership:
 Both callables enforce attestation, so debug builds need a **registered debug
 token** — otherwise every create/join fails with `401 Unauthenticated`:
 
-1. Add the token under *App Check → Apps → Manage debug tokens*.
+1. Register the app in App Check **first** (see *Required console setup*), then
+   add the token under *App Check → Apps → Manage debug tokens*. Order matters:
+   a debug token created before the app is registered is rejected forever with
+   `403 App attestation failed`, even after registration completes — delete it
+   and create a new one.
 2. Pass the same value at run time so it never lands in the repository:
 
    ```bash
