@@ -19,6 +19,10 @@ const db = admin.firestore();
  * Both callables enforce App Check (Firebase Console > App Check > Apps must have
  * the Android/iOS apps registered, otherwise calls fail with failed-precondition).
  */
+// Colocated with the Cloud Firestore database (europe-west3 / Frankfurt) so that
+// membership writes stay in the EU and add no cross-region latency.
+const REGION = "europe-west3";
+
 const INVITE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const INVITE_CODE_LENGTH = 6;
 const INVITE_CODE_ATTEMPTS = 8;
@@ -125,7 +129,7 @@ function hivemindPayload(
  * The invite code never leaves the server as client input.
  */
 export const createHivemind = onCall(
-  { enforceAppCheck: true, consumeAppCheckToken: true },
+  { region: REGION, enforceAppCheck: true, consumeAppCheckToken: true },
   async (request) => {
     const uid = requireUid(request.auth);
     const name = requireText(request.data?.name, MAX_NAME_LENGTH, "name");
@@ -176,7 +180,7 @@ export const createHivemind = onCall(
  * server-side before the membership document is written.
  */
 export const joinHivemind = onCall(
-  { enforceAppCheck: true, consumeAppCheckToken: true },
+  { region: REGION, enforceAppCheck: true, consumeAppCheckToken: true },
   async (request) => {
     const uid = requireUid(request.auth);
     const submitted = requireText(
@@ -236,7 +240,7 @@ export const joinHivemind = onCall(
  * bounded before it reaches FCM.
  */
 export const notifyReminder = onDocumentCreated(
-  "reminders/{reminderId}",
+  { document: "reminders/{reminderId}", region: REGION },
   async (event) => {
     const snapshot = event.data;
     if (!snapshot) return;

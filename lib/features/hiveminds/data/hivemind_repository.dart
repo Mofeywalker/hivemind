@@ -11,6 +11,10 @@ import '../domain/hivemind_model.dart';
 /// write of membership). Invite codes are generated, uniquely allocated and
 /// verified server-side; they are never readable by non-members.
 class HivemindRepository {
+  /// Must match the `region` of the callables in functions/src/index.ts, which
+  /// is colocated with the Firestore database.
+  static const String functionsRegion = 'europe-west3';
+
   final FirebaseFirestore _firestore;
   final FirebaseAuth _auth;
   final FirebaseFunctions _functions;
@@ -21,7 +25,8 @@ class HivemindRepository {
     FirebaseFunctions? functions,
   }) : _firestore = firestore ?? FirebaseFirestore.instance,
        _auth = auth ?? FirebaseAuth.instance,
-       _functions = functions ?? FirebaseFunctions.instance;
+       _functions =
+           functions ?? FirebaseFunctions.instanceFor(region: functionsRegion);
 
   Future<List<Hivemind>> getJoinedHiveminds() async {
     final userId = _auth.currentUser?.uid;

@@ -238,6 +238,7 @@ The client is untrusted and holds no authority over membership:
 - **Reminders** cannot be moved between hiveminds or re-attributed, and `title`/`notes` are length-bounded before they reach FCM.
 - **App Check** is enforced on both callables (`enforceAppCheck: true`) and attestation is initialized in `FirebaseService`.
 - **Sign-out** revokes the device push token, clears scheduled local notifications and drops cached hivemind state.
+- **Region.** All functions run in `europe-west3`, colocated with the Cloud Firestore database (also `europe-west3`). The client must target the same region — see `HivemindRepository.functionsRegion`.
 
 ### Required console setup
 1. **App Check:** register the Android/iOS apps under *Firebase Console → App Check → Apps*. Development builds use the debug providers — add their tokens under *App Check → Apps → Manage debug tokens*. Calls fail with `failed-precondition` until the apps are registered.
@@ -255,8 +256,6 @@ firebase deploy --only firestore:rules
 ```
 
 Then release the app. Note that apps installed before this change create and join hiveminds by writing `member_ids` directly; once the new rules are live those writes are denied, so those clients must be updated to join through the callables.
-
----
 
 ---
 
