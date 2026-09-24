@@ -22,16 +22,27 @@ class FirebaseService {
   }
 
   /// App Check attestation, required by the createHivemind / joinHivemind Cloud
-  /// Functions. Release builds use Play Integrity / DeviceCheck; debug builds
-  /// use the debug providers, whose tokens must be registered in the Firebase
-  /// Console under App Check > Apps > Manage debug tokens.
+  /// Functions. Release builds use Play Integrity / DeviceCheck. Debug builds
+  /// cannot attest, so they use the debug providers whose token must be
+  /// registered in the Firebase Console (App Check > Apps > Manage debug
+  /// tokens). Pass it at build time to keep the secret out of the repository:
+  ///
+  ///   `flutter run --dart-define=APP_CHECK_DEBUG_TOKEN=<uuid>`
+  ///
+  /// Without the define the SDK generates its own token and prints it to logcat.
   static Future<void> _activateAppCheck() async {
+    const debugToken = String.fromEnvironment('APP_CHECK_DEBUG_TOKEN');
+
     await FirebaseAppCheck.instance.activate(
       providerAndroid: kDebugMode
-          ? const AndroidDebugProvider()
+          ? (debugToken.isEmpty
+                ? const AndroidDebugProvider()
+                : const AndroidDebugProvider(debugToken: debugToken))
           : const AndroidPlayIntegrityProvider(),
       providerApple: kDebugMode
-          ? const AppleDebugProvider()
+          ? (debugToken.isEmpty
+                ? const AppleDebugProvider()
+                : const AppleDebugProvider(debugToken: debugToken))
           : const AppleDeviceCheckProvider(),
     );
   }

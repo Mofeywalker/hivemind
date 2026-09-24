@@ -245,6 +245,46 @@ The client is untrusted and holds no authority over membership:
 2. Optionally enable App Check enforcement for Cloud Firestore in the same console section (rules cannot enforce it themselves).
 3. **App Links:** [`public/.well-known/assetlinks.json`](public/.well-known/assetlinks.json) must list the **release** signing fingerprint only. The Android debug key is public knowledge, so publishing its fingerprint would let a third party sign an APK that claims the `hivemind-236c0.firebaseapp.com` App Link and intercept magic-link sign-in codes.
 
+### Local development with App Check
+
+Both callables enforce attestation, so debug builds need a **registered debug
+token** — otherwise every create/join fails with `401 Unauthenticated`:
+
+1. Add the token under *App Check → Apps → Manage debug tokens*.
+2. Pass the same value at run time so it never lands in the repository:
+
+   ```bash
+   flutter run --dart-define=APP_CHECK_DEBUG_TOKEN=<uuid>
+   ```
+
+   Without the define the SDK generates its own token and prints it to logcat.
+
+The console steps have API equivalents when you have `gcloud` credentials
+(`firebase-tools` cannot manage App Check; paths use the project *number*):
+
+```bash
+ADMIN=$(gcloud auth print-access-token)
+P=450095725738                     # project number, not the project id
+APP=1:450095725738:android:91ec2f5299136de0cb24d3
+BASE=https://firebaseappcheck.googleapis.com/v1/projects/$P/apps/$APP
+
+# register / inspect the Play Integrity provider
+curl -s -H "Authorization: Bearer $ADMIN" "$BASE/playIntegrityConfig"
+
+# create a debug token (the secret is chosen by the caller)
+curl -s -H "Authorization: Bearer $ADMIN" -H "Content-Type: application/json" \
+  -X POST "$BASE/debugTokens" \
+  -d '{"displayName":"local dev","token":"<uuid>"}'
+
+# read/enforce per product: firestore.googleapis.com, identitytoolkit.googleapis.com
+curl -s -H "Authorization: Bearer $ADMIN" \
+  "https://firebaseappcheck.googleapis.com/v1/projects/$P/services"
+```
+
+Enforcement for Cloud Firestore is deliberately left `UNENFORCED`: the stored
+rules already carry the authorization weight, and enforcing attestation there
+would break clients released before App Check was added.
+
 ### Deployment order for trust-boundary changes
 
 ```bash
