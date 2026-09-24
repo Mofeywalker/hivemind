@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:app_links/app_links.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -56,7 +57,9 @@ class _HivemindAppState extends ConsumerState<HivemindApp> {
     // Handle link that launched the app (cold start)
     _appLinks.getInitialLink().then((uri) {
       if (uri != null) {
-        _handleIncomingLink(uri.toString());
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _handleIncomingLink(uri.toString());
+        });
       }
     });
 
@@ -70,15 +73,43 @@ class _HivemindAppState extends ConsumerState<HivemindApp> {
     try {
       if (FirebaseAuth.instance.isSignInWithEmailLink(link)) {
         final prefs = await SharedPreferences.getInstance();
-        final email = prefs.getString('emailForSignIn');
+        var email = prefs.getString('emailForSignIn');
+
+        // Fallback 1: check if email was passed in link query parameters
         if (email == null || email.isEmpty) {
-          // Email not found — can't complete sign-in without it
+          final uri = Uri.tryParse(link);
+          email = uri?.queryParameters['email'];
+        }
+
+        // Fallback 2: prompt user to confirm their email if missing after fresh installation
+        if (email == null || email.isEmpty) {
+          final navContext = AppRouter.navigatorKey.currentContext;
+          if (navContext != null && navContext.mounted) {
+            email = await _promptEmailForSignIn(navContext);
+          }
+        }
+
+        if (email == null || email.trim().isEmpty) {
           return;
         }
-        await FirebaseAuth.instance.signInWithEmailLink(
-          email: email,
+
+        final cred = await FirebaseAuth.instance.signInWithEmailLink(
+          email: email.trim(),
           emailLink: link,
         );
+
+        if (cred.user != null) {
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(cred.user!.uid)
+              .set({
+                'display_name': email.split('@').first,
+                'email': email.trim(),
+                'created_at': DateTime.now().toUtc().toIso8601String(),
+                'updated_at': DateTime.now().toUtc().toIso8601String(),
+              }, SetOptions(merge: true));
+        }
+
         await prefs.remove('emailForSignIn');
         if (mounted) {
           _router.go('/');
@@ -88,6 +119,47 @@ class _HivemindAppState extends ConsumerState<HivemindApp> {
       // Sign-in failed — ignore silently; user can retry on login screen
       debugPrint('Email link sign-in error: $e');
     }
+  }
+
+  Future<String?> _promptEmailForSignIn(BuildContext context) async {
+    final controller = TextEditingController();
+    return showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) {
+        return AlertDialog(
+          title: const Text('E-Mail bestätigen'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Bitte bestätige deine E-Mail-Adresse, um die Anmeldung mit dem Magic Link abzuschließen.',
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: controller,
+                keyboardType: TextInputType.emailAddress,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  labelText: 'E-Mail',
+                  hintText: 'name@example.com',
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(null),
+              child: const Text('Abbrechen'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(ctx).pop(controller.text.trim()),
+              child: const Text('Anmelden'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _startRealtime() {
